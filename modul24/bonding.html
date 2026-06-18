@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover"/>
+<title>Mekanisme Perlekatan terhadap Gigi</title>
+<style>
+:root {
+  --primary:   #E1A36F;
+  --primary2:  #577E89;
+  --bg:        #FBF6EA;
+  --dark:      #1E2E33;
+  --smoke:     #8C8174;
+  --highlight: #C2783C;
+  --calico:    #DEC484;
+  --hampton:   #E2D8A5;
+  --sea:       #6F9F9C;
+
+  --illus-w: 40%;
+  --illus-h: 40%;
+
+  --fs-scale: 1.75;
+  --fs-min:   1.5;
+  --fs-max:   2.2;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+
+#outer {
+  width: 100vw; height: 100vh; height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.row {
+  width: 100vw; height: 100vh; height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  position: relative;
+}
+.track {
+  display: flex; width: 100%; height: 100%;
+  transition: transform 0.55s cubic-bezier(0.77,0,0.18,1);
+  will-change: transform;
+}
+.panel {
+  width: 100vw; height: 100vh; height: 100dvh;
+  flex-shrink: 0; position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+
+#vnav {
+  position: fixed; right: calc(24px + env(safe-area-inset-right)); top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 200;
+}
+.vdot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  border: none; cursor: pointer; padding: 0;
+  transition: background .3s, transform .3s;
+}
+.vdot.active { background: var(--primary); transform: scale(1.4); }
+
+.snum {
+  position: absolute; bottom: calc(22px + env(safe-area-inset-bottom)); right: calc(48px + env(safe-area-inset-right));
+  font-family: 'Courier New', monospace;
+  font-size: .72rem; letter-spacing: .15em;
+  opacity: .3; pointer-events: none;
+}
+
+.eyebrow {
+  font-family: 'Courier New', monospace;
+  font-size: clamp(.6rem,1vw,.8rem);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--smoke);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 1.4em;
+}
+.eyebrow::before {
+  content: ''; display: inline-block;
+  width: 32px; height: 2px; background: var(--primary);
+}
+.eyebrow.light { color: rgba(255,255,255,.45); }
+.eyebrow.light::before { background: var(--primary); }
+.accent  { color: var(--primary); }
+.accent2 { color: var(--primary2); }
+.divhr   { width: 52px; height: 3px; background: var(--primary); border: none; margin: 1.4em 0; }
+.cite    { font-family: 'Courier New', monospace; font-size: .68rem; letter-spacing: .03em; opacity: .55; margin-top: 1.2em; display:block; }
+
+/* COVER */
+#r1 .panel { background: var(--dark); }
+.hero-inner {
+  display: flex; flex-direction: column; justify-content: center;
+  height: 100%; padding: 8vh 10vw;
+  position: relative; z-index: 2;
+}
+.hero-inner h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(3rem,8vw,7rem);
+  font-weight: 700; line-height: 1.02;
+  color: #fff; letter-spacing: -.02em;
+}
+.hero-sub {
+  font-family: Georgia, serif; font-style: italic;
+  font-size: calc(var(--fs-scale) * clamp(.9rem,1.6vw,1.2rem));
+  color: var(--smoke); max-width: 560px; line-height: 1.7;
+  margin-top: .4em;
+}
+.hero-meta {
+  margin-top: 2.6em;
+  font-family: 'Courier New', monospace;
+  font-size: clamp(.6rem,1vw,.78rem);
+  color: #6f6f6f; letter-spacing: .12em;
+  display: flex; gap: 1.6em; flex-wrap: wrap;
+}
+.hero-meta span { display: flex; align-items: center; gap: 6px; }
+.hero-meta span::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--primary); display: inline-block;
+}
+.egg-bg { position: absolute; right: -4vw; bottom: -8vh; opacity: .10; pointer-events: none; }
+.egg-bg img { max-width: 100%; height: auto; }
+
+/* FULL */
+#r2 .panel { background: var(--bg); }
+.full-inner {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  justify-content: center; padding: 7vh 9vw; position: relative;
+}
+.full-inner h2 {
+  font-family: Georgia, serif; font-weight: 700; color: var(--dark);
+  font-size: clamp(2rem,4vw,3.2rem); line-height: 1.1; max-width: 14em;
+}
+.full-lead {
+  font-family: sans-serif; max-width: 740px; margin-top: .5em;
+  font-size: calc(var(--fs-scale) * clamp(.9rem,1.5vw,1.2rem));
+  color: #4a4540; line-height: 1.7;
+}
+.reason-grid {
+  display: flex; flex-wrap: wrap; gap: 1.6em; margin-top: 2.8em; max-width: 1100px;
+}
+.reason-card {
+  flex: 1 1 240px; min-width: 220px;
+  background: #fff; border-radius: 16px;
+  padding: 1.5em 1.5em 1.6em;
+  box-shadow: 0 2px 16px rgba(30,46,51,.06);
+}
+.reason-num {
+  font-family: 'Courier New', monospace; font-weight: 700;
+  color: var(--highlight); font-size: .82rem; letter-spacing: .08em;
+}
+.reason-card strong {
+  display: block; font-family: Georgia, serif; font-weight: 700; color: var(--dark);
+  font-size: calc(var(--fs-scale) * clamp(.9rem,1.4vw,1.2rem)); margin-top: .4em;
+}
+.reason-card span.rdesc {
+  display: block; font-family: sans-serif; color: var(--smoke);
+  font-size: calc(var(--fs-scale) * clamp(.76rem,1.1vw,.9rem)); margin-top: .4em; line-height: 1.55;
+}
+
+/* STEPS */
+.steps-row .panel { background: var(--dark); flex-direction: column; }
+.process-panel { display: flex; flex-direction: row; align-items: stretch; width: 100%; height: 100%; }
+.pp-left {
+  flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center;
+  padding: 8vh 5vw 8vh 7vw; background: #111113;
+}
+.pp-left h2 { font-family: Georgia, serif; font-size: clamp(1.6rem,2.8vw,2.3rem); font-weight: 700; color: #fff; line-height: 1.15; margin-top: .4em; }
+.step-indicator { margin-top: 2em; font-family: 'Courier New', monospace; font-size: clamp(.65rem,1vw,.82rem); color: var(--primary); letter-spacing: .12em; }
+.step-desc { margin-top: .9em; font-family: sans-serif; font-size: calc(var(--fs-scale) * clamp(.8rem,1.3vw,.95rem)); color: #aaa; line-height: 1.7; max-width: 38em; }
+.step-eq { margin-top: 1em; font-family: 'Courier New', monospace; font-size: calc(var(--fs-scale) * clamp(.72rem,1.1vw,.85rem)); color: var(--primary); letter-spacing: .02em; }
+.step-cite { margin-top: 1.2em; font-family: 'Courier New', monospace; font-size: .68rem; color: #555; letter-spacing: .03em; }
+.pp-right {
+  flex: 0 0 var(--illus-w); width: var(--illus-w); max-width: var(--illus-w);
+  display: flex; align-items: center; justify-content: center;
+  background: #F7F1E2; position: relative; overflow: hidden;
+}
+.pp-right img { width: 86%; height: 86%; object-fit: contain; }
+
+.step-bar { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; align-items: center; z-index: 10; }
+.step-pip { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+.step-pip-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); transition: background .3s, transform .3s; }
+.step-pip.active .step-pip-dot { background: var(--primary); transform: scale(1.45); }
+.step-pip-label { font-family: 'Courier New', monospace; font-size: .55rem; color: rgba(255,255,255,.25); letter-spacing: .1em; transition: color .3s; white-space: nowrap; }
+.step-pip.active .step-pip-label { color: var(--primary); }
+
+/* COMPARE */
+#r7 .panel { background: var(--bg); }
+.compare-inner { display: flex; width: 100%; height: 100%; }
+.compare-col { flex: 1 1 50%; display: flex; flex-direction: column; justify-content: center; padding: 7vh 5vw; position: relative; overflow: hidden; }
+.compare-col.mech { background: linear-gradient(155deg, #21343a 0%, var(--primary2) 150%); }
+.compare-col.chem { background: var(--bg); }
+.compare-col h2 { font-family: Georgia, serif; font-weight: 700; font-size: clamp(1.6rem,2.8vw,2.4rem); line-height: 1.15; }
+.compare-col.mech h2 { color: #fff; }
+.compare-col.chem h2 { color: var(--dark); }
+.compare-col .eyebrow.onmech { color: rgba(255,255,255,.5); }
+.compare-col .eyebrow.onmech::before { background: var(--primary); }
+.compare-desc { font-family: sans-serif; margin-top: .8em; max-width: 34em; font-size: calc(var(--fs-scale) * clamp(.85rem,1.3vw,1rem)); line-height: 1.65; }
+.compare-col.mech .compare-desc { color: #cfd9da; }
+.compare-col.chem .compare-desc { color: #4a4540; }
+.compare-img { width: 100%; max-width: 400px; margin: 1.5em 0 .8em; }
+.compare-img img { width: 100%; height: auto; }
+.compare-tags { display: flex; flex-wrap: wrap; gap: .6em; margin-top: .8em; }
+.ctag { font-family: 'Courier New', monospace; font-size: .7rem; letter-spacing: .04em; padding: .4em .8em; border-radius: 999px; }
+.compare-col.mech .ctag { background: rgba(255,255,255,.12); color: #e7ecec; }
+.compare-col.chem .ctag { background: #efe6d2; color: var(--primary2); }
+.compare-cite { font-family: 'Courier New', monospace; font-size: .66rem; letter-spacing: .03em; margin-top: 1.2em; opacity: .65; display: block; }
+
+/* SAJIAN */
+#rlast .panel { background: #F1E7CE; }
+.sajian-inner { display: flex; flex-direction: row; width: 100%; height: 100%; }
+.sajian-left { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding: 8vh 6vw 8vh 8vw; background: var(--dark); }
+.sajian-left h2 { font-family: Georgia, serif; font-size: clamp(2rem,4vw,3.5rem); font-weight: 700; color: #fff; line-height: 1.08; }
+.sajian-tips { margin-top: 2em; display: flex; flex-direction: column; gap: 1.2em; }
+.stip { display: flex; align-items: flex-start; gap: 1em; font-family: sans-serif; font-size: calc(var(--fs-scale) * clamp(.8rem,1.3vw,1rem)); color: #c6c6c2; line-height: 1.6; }
+.stip-marker { font-family: 'Courier New', monospace; font-size: .75rem; color: var(--primary); min-width: 24px; padding-top: .15em; }
+.sajian-right { flex: 0 0 var(--illus-w); width: var(--illus-w); max-width: var(--illus-w); display: flex; align-items: center; justify-content: center; background: #F1E7CE; position: relative; }
+.sajian-right img { width: 86%; height: 86%; object-fit: contain; }
+
+/* NAV ARROW */
+.nav-arrow {
+  position: fixed; z-index: 300; background: none; border: none; padding: 0;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease, color 0.2s ease; color: rgba(255,255,255,0.7);
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-arrow.visible { opacity: 1; pointer-events: auto; }
+.nav-arrow svg { width: 34px; height: 34px; display: block; filter: drop-shadow(0 0 6px rgba(0,0,0,0.4)); transition: transform 0.18s ease; }
+.nav-arrow:hover svg  { transform: scale(1.25); }
+.nav-arrow:active svg { transform: scale(0.9); }
+.nav-arrow::before { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: rgba(0,0,0,0.22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background 0.2s; }
+.nav-arrow:hover::before { background: rgba(0,0,0,0.38); }
+body.bg-light .nav-arrow { color: rgba(0,0,0,0.45); }
+body.bg-light .nav-arrow::before { background: rgba(255,255,255,0.5); }
+body.bg-light .nav-arrow:hover::before { background: rgba(255,255,255,0.8); }
+body.bg-light .nav-arrow svg { filter: drop-shadow(0 0 4px rgba(255,255,255,0.6)); }
+.nav-arrow:hover { color: var(--primary); }
+body.bg-light .nav-arrow:hover { color: var(--primary2); }
+#arr-up    { top: calc(18px + env(safe-area-inset-top));    left: 50%; transform: translateX(-50%); }
+#arr-down  { bottom: calc(18px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
+#arr-left  { left: calc(16px + env(safe-area-inset-left));   top: 50%;  transform: translateY(-50%); }
+#arr-right { right: calc(16px + env(safe-area-inset-right));  top: 50%;  transform: translateY(-50%); }
+
+#btn-fullscreen {
+  position: fixed; z-index: 300; top: calc(18px + env(safe-area-inset-top)); right: calc(18px + env(safe-area-inset-right));
+  height: 42px; padding: 0 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: none; cursor: pointer; color: rgba(255,255,255,0.7); transition: background .2s, color .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+#btn-fullscreen .fs-label { font-family: sans-serif; font-size: .82rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; white-space: nowrap; }
+#btn-fullscreen:hover { background: rgba(0,0,0,0.38); color: var(--primary); }
+body.bg-light #btn-fullscreen { color: rgba(0,0,0,0.45); background: rgba(255,255,255,0.5); }
+body.bg-light #btn-fullscreen:hover { background: rgba(255,255,255,0.8); color: var(--primary2); }
+
+#font-ctrl {
+  position: fixed; z-index: 300; left: calc(18px + env(safe-area-inset-left)); bottom: calc(18px + env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 3px; background: rgba(0,0,0,0.22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px; padding: 5px 10px;
+}
+#font-ctrl button { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; border: none; background: transparent; cursor: pointer; color: rgba(255,255,255,0.75); font-family: Georgia, serif; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: color .2s, opacity .2s; -webkit-tap-highlight-color: transparent; }
+#font-ctrl button:first-child { font-size: .78rem; }
+#font-ctrl button:last-child  { font-size: 1.02rem; }
+#font-ctrl button:hover:not(:disabled) { color: var(--primary); }
+#font-ctrl button:disabled { opacity: .3; cursor: default; }
+#font-pct { font-family: 'Courier New', monospace; font-size: .66rem; color: rgba(255,255,255,0.5); min-width: 36px; text-align: center; letter-spacing: .02em; user-select: none; }
+body.bg-light #font-ctrl { background: rgba(255,255,255,0.5); }
+body.bg-light #font-ctrl button { color: rgba(0,0,0,0.5); }
+body.bg-light #font-pct { color: rgba(0,0,0,0.4); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  #vnav { right: 16px; gap: 8px; } .vdot { width: 8px; height: 8px; }
+  .snum { right: 40px; }
+  .pp-left { padding: 6vh 4vw 6vh 5vw; }
+  .sajian-left { padding: 6vh 5vw 6vh 7vw; }
+  .full-inner { padding: 6vh 7vw; }
+  .step-pip-label { display: none; } .step-bar { gap: 16px; bottom: 18px; }
+  .compare-col { padding: 6vh 5vw; }
+}
+</style>
+</head>
+<body>
+<nav id="vnav">
+  <button class="vdot active" data-row="0"></button>
+  <button class="vdot" data-row="1"></button>
+  <button class="vdot" data-row="2"></button>
+  <button class="vdot" data-row="3"></button>
+  <button class="vdot" data-row="4"></button>
+  <button class="vdot" data-row="5"></button>
+  <button class="vdot" data-row="6"></button>
+  <button class="vdot" data-row="7"></button>
+  <button class="vdot" data-row="8"></button>
+  <button class="vdot" data-row="9"></button>
+  <button class="vdot" data-row="10"></button>
+  <button class="vdot" data-row="11"></button>
+  <button class="vdot" data-row="12"></button>
+  <button class="vdot" data-row="13"></button>
+  <button class="vdot" data-row="14"></button>
+  <button class="vdot" data-row="15"></button>
+  <button class="vdot" data-row="16"></button>
+  <button class="vdot" data-row="17"></button>
+</nav>
+
+<div id="outer">
+
+  <!-- SLIDE COVER -->
+  <div class="row" id="r1">
+    <div class="track">
+      <div class="panel">
+        <!--  GAMBAR: siluet gigi -->
+        <div class="egg-bg"><img src="siluet.jpg" alt="Siluet gigi"/></div>
+        <div class="hero-inner">
+          <h1>Mekanisme<br><span class="accent">Perlekatan</span> terhadap Gigi</h1>
+          <hr class="divhr"/>
+          <p class="hero-sub">oleh: drg Muhammad Dian Firdausy, M.Sc(DMS)<br>Departemen Dental Material<br>FKG UNISSULA</p>
+        </div>
+        <div class="snum">01 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: KONTEN SAJA -->
+  <div class="row" id="r2">
+    <div class="track">
+      <div class="panel">
+        <div class="full-inner">
+          <div class="eyebrow">I &middot; PENDAHULUAN</div>
+          <h2>Mengapa Adhesi <span class="accent2">Penting?</span></h2>
+          <hr class="divhr"/>
+          <p class="full-lead"><em>Bonding</em> adalah istilah klinis untuk proses adhesi material restorasi terhadap struktur gigi. Pemahaman mekanismenya menentukan bagaimana sebuah restorasi dirancang, bukan sekadar bagaimana ia dipasang.</p>
+          <div class="reason-grid">
+            <div class="reason-card"><span class="reason-num">01</span><strong>Preservasi Struktur Gigi</strong><span class="rdesc">Retensi adhesif mengurangi kebutuhan preparasi kavitas yang luas, mempertahankan jaringan sehat.</span></div>
+            <div class="reason-card"><span class="reason-num">02</span><strong>Penguatan Retensi</strong><span class="rdesc">Ikatan kimiawi dan mikromekanis menambah kekuatan retensi di luar bentuk preparasi semata.</span></div>
+            <div class="reason-card"><span class="reason-num">03</span><strong>Mencegah Microleakage</strong><span class="rdesc">Penutupan tepi restorasi yang rapat menghambat kebocoran tepi dan karies sekunder.</span></div>
+            <div class="reason-card"><span class="reason-num">04</span><strong>Durabilitas Jangka Panjang</strong><span class="rdesc">Adhesi yang stabil memperpanjang usia klinis restorasi di bawah tekanan kunyah berulang.</span></div>
+            <div class="reason-card"><span class="reason-num">05</span><strong>Mencegah Keluhan Pasca-Restorasi</strong><span class="rdesc">Penutupan tubuli dentin yang baik menurunkan risiko sensitivitas setelah penumpatan.</span></div>
+          </div>
+        </div>
+        <div class="snum">02 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — STEPS:2 — Dasar Adhesi (Adhesi vs Kohesi) -->
+  <div class="row steps-row" id="r3">
+    <div class="track">
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">DASAR ADHESI — 1/2</div>
+            <h2>Kohesi</h2>
+            <div class="step-indicator">PENGERTIAN</div>
+            <p class="step-desc">Kohesi adalah gaya tarik-menarik antar partikel sejenis. Gaya ini menyebabkan suatu zat cenderung mempertahankan bentuknya dan tidak dengan mudah menyebar atau melekat pada zat lain tanpa bantuan gaya adhesi.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> kohesi terjadi pada material yang sama (contoh: air dengan air, resin dengan resin). Kekuatan kohesi ditentukan oleh ikatan antar molekul sejenis, seperti ikatan hidrogen pada air atau ikatan kovalen pada polimer.</p>
+            <p class="step-desc"><strong>Contoh:</strong> tetesan air yang membentuk bulatan di atas permukaan kaca; resin komposit yang saling melekat membentuk massa yang koheren.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi kohesi -->
+            <img src="kohesi-adhesi.jpg" alt="Ilustrasi kohesi antar partikel sejenis"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">DASAR ADHESI — 2/2</div>
+            <h2>Adhesi</h2>
+            <div class="step-indicator">PENGERTIAN</div>
+            <p class="step-desc">Adhesi adalah gaya tarik-menarik antar partikel tidak sejenis. Dalam kedokteran gigi, adhesi terjadi antara material restorasi dan struktur gigi, baik melalui interaksi mekanis, kimiawi, maupun mikromekanis.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> adhesi melibatkan dua material yang berbeda (contoh: resin komposit dengan dentin, GIC dengan enamel). Keberhasilan adhesi bergantung pada wetting, kebersihan permukaan, dan kompatibilitas kimiawi antara adhesive dan adherend.</p>
+            <p class="step-desc"><strong>Contoh:</strong> perlekatan resin komposit pada enamel yang dietsa; ikatan ionik antara GIC dan hidroksiapatit gigi.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi adhesi -->
+            <img src="kohesi-adhesi.jpg" alt="Ilustrasi adhesi antar partikel tidak sejenis"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-bar">
+      <div class="step-pip active" data-step="0"><div class="step-pip-dot"></div><div class="step-pip-label">KOHESI</div></div>
+      <div class="step-pip" data-step="1"><div class="step-pip-dot"></div><div class="step-pip-label">ADHESI</div></div>
+    </div>
+    <div class="snum">03 / 18</div>
+  </div>
+
+  <!-- SLIDE 3 — STEPS:2 — Ikatan Kimiawi Primer & Sekunder -->
+  <div class="row steps-row" id="r4">
+    <div class="track">
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">IKATAN KIMIAWI — 1/2</div>
+            <h2>Ikatan Primer</h2>
+            <div class="step-indicator">IONIK &middot; KOVALEN &middot; METALIK</div>
+            <p class="step-desc"><strong>Pengertian:</strong> ikatan kimiawi primer adalah gaya tarik-menarik kuat antar atom yang membentuk molekul atau senyawa, meliputi ikatan ionik, kovalen, dan metalik.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> energi ikatan tinggi (150–1000 kJ/mol), bersifat stabil dan menentukan kekuatan intrinsik material. Ikatan ionik terjadi melalui transfer elektron antar atom bermuatan, ikatan kovalen melalui pemakaian bersama pasangan elektron, dan ikatan metalik melalui "lautan elektron" yang terdelokalisasi.</p>
+            <p class="step-desc"><strong>Contoh dalam kedokteran gigi:</strong> ikatan ionik antara gugus karboksil GIC dan Ca²⁺ hidroksiapatit; ikatan kovalen dalam jaringan polimer resin komposit; ikatan metalik dalam aloi amalgam dan kerangka logam gigi tiruan.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi ikatan primer -->
+            <img src="ikatan-primer.jpg" alt="Ilustrasi ikatan ionik, kovalen, dan metalik"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">IKATAN KIMIAWI — 2/2</div>
+            <h2>Ikatan Sekunder</h2>
+            <div class="step-indicator">HIDROGEN &middot; VAN DER WAALS</div>
+            <p class="step-desc"><strong>Pengertian:</strong> ikatan sekunder adalah gaya tarik-menarik lemah antar molekul, jauh lebih rendah energinya dibanding ikatan primer, namun berperan penting dalam fenomena pembasahan dan adsorpsi.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> energi ikatan rendah (2–40 kJ/mol), bersifat reversibel dan dipengaruhi jarak antar molekul. Ikatan hidrogen terjadi antara atom H yang terikat pada atom elektronegatif (O, N) dengan atom elektronegatif lainnya. Gaya van der Waals timbul dari fluktuasi sementara distribusi elektron yang menciptakan dipol sesaat.</p>
+            <p class="step-desc"><strong>Contoh dalam kedokteran gigi:</strong> ikatan hidrogen dalam matriks kolagen dentin yang memengaruhi infiltrasi primer; gaya van der Waals yang berkontribusi pada adhesi awal resin hidrofobik terhadap permukaan gigi yang telah dikeringkan.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi ikatan sekunder -->
+            <img src="vanderwaals.gif" alt="Ilustrasi ikatan hidrogen dan van der Waals"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-bar">
+      <div class="step-pip active" data-step="0"><div class="step-pip-dot"></div><div class="step-pip-label">PRIMER</div></div>
+      <div class="step-pip" data-step="1"><div class="step-pip-dot"></div><div class="step-pip-label">SEKUNDER</div></div>
+    </div>
+    <div class="snum">04 / 18</div>
+  </div>
+
+  <!-- SLIDE 4 — STEPS:3 — Wetting, Tegangan Permukaan, Sudut Kontak, Viskositas -->
+  <div class="row steps-row" id="r5">
+    <div class="track">
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">WETTING — 1/3</div>
+            <h2>Wetting &amp; Sudut Kontak</h2>
+            <div class="step-indicator">0&deg; &lt; θ &lt; 90&deg; = HIGH WETTABILITY</div>
+            <p class="step-desc">Wetting (pembasahan) adalah kemampuan cairan untuk menyebar dan membentuk kontak dengan permukaan padat. Sudut kontak (θ) mengukur derajat pembasahan: θ kecil (<90°) menunjukkan pembasahan baik, θ besar (>90°) menunjukkan pembasahan buruk. Dalam konteks adhesi gigi, pembasahan yang baik memungkinkan adhesive mengalir ke seluruh mikroporositas permukaan yang dietsa, memaksimalkan area kontak dan kekuatan ikatan.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi sudut kontak -->
+            <img src="wetting.jpg" alt="Ilustrasi sudut kontak kecil vs besar"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">WETTING — 2/3</div>
+            <h2>Tegangan Permukaan</h2>
+            <div class="step-indicator">SURFACE TENSION</div>
+            <p class="step-desc">Tegangan permukaan adalah kecenderungan permukaan cairan untuk menegang seperti membran elastis akibat gaya kohesi antar molekul cairan. Semakin rendah tegangan permukaan suatu adhesive, semakin mudah ia menyebar pada permukaan padat. Tegangan permukaan dentin yang dietsa dan adhesive harus sesuai agar terjadi pembasahan optimal.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi tegangan permukaan -->
+            <img src="tegangan-permukaan.jpg" alt="Ilustrasi tegangan permukaan"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">WETTING — 3/3</div>
+            <h2>Viskositas</h2>
+            <div class="step-indicator">RESISTENSI TERHADAP ALIRAN</div>
+            <p class="step-desc">Viskositas adalah ukuran resistensi cairan terhadap aliran. Adhesive dengan viskositas rendah dapat mengalir lebih mudah ke dalam mikroporositas permukaan gigi yang dietsa. Monomer hidrofilik seperti HEMA ditambahkan untuk menurunkan viskositas adhesive dan meningkatkan penetrasi ke jaringan kolagen dentin yang lembap.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi viskositas -->
+            <img src="viskositas.png" alt="Ilustrasi viskositas cairan"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-bar">
+      <div class="step-pip active" data-step="0"><div class="step-pip-dot"></div><div class="step-pip-label">WETTING</div></div>
+      <div class="step-pip" data-step="1"><div class="step-pip-dot"></div><div class="step-pip-label">TEGANGAN PERMUKAAN</div></div>
+      <div class="step-pip" data-step="2"><div class="step-pip-dot"></div><div class="step-pip-label">VISKOSITAS</div></div>
+    </div>
+    <div class="snum">05 / 18</div>
+  </div>
+
+<!-- SLIDE 5 — Adhesive Joint (pakai gambar asli) -->
+  <div class="row" id="r6">
+    <div class="track">
+      <div class="panel">
+        <div class="full-inner">
+          
+          <!-- Flex Container -->
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2em;">
+            
+            <!-- Kolom Teks (Kiri) -->
+            <div style="flex: 1; min-width: 300px;">
+              <div class="eyebrow">DASAR ADHESI</div>
+              <h2>Prinsip <span class="accent">Adhesive Joint</span></h2>
+              <hr class="divhr"/>
+              <p class="full-lead">Adhesive joint adalah sambungan adhesif antara dua permukaan adherend yang disatukan oleh lapisan adhesive. Terdapat dua interface: interface 1 antara adherend pertama dan adhesive, serta interface 2 antara adhesive dan adherend kedua.</p>
+              <p class="full-lead" style="margin-top:1em;"><strong>Komponen:</strong> adherend (substrat yang akan dilekatkan, misalnya gigi dan restorasi), adhesive (material perantara yang menghubungkan kedua adherend), dan interface (bidang kontak antara adhesive dan masing-masing adherend). Kekuatan adhesive joint ditentukan oleh kekuatan kohesi adhesive itu sendiri dan kekuatan adhesi pada kedua interface.</p>
+            </div>
+
+            <!-- Kolom Gambar (Kanan) -->
+            <div style="flex: 1; min-width: 300px; display: flex; justify-content: center;">
+              <!--  GAMBAR: skema adhesive joint -->
+              <img src="adhesive-joint.png" alt="Skema adhesive joint: adherend, adhesive, interface" style="width:100%; max-width:500px;"/>
+            </div>
+
+          </div>
+          <!-- End Flex Container -->
+
+        </div>
+        <div class="snum">06 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — Prinsip dan Manfaat Bonding (dari PPTX) -->
+  <div class="row" id="r7">
+    <div class="track">
+      <div class="panel">
+        <div class="full-inner">
+          <div class="eyebrow">PRINSIP &amp; MANFAAT</div>
+          <h2>Prinsip dan Manfaat <span class="accent">Bonding</span> dalam Kedokteran Gigi</h2>
+          <hr class="divhr"/>
+          <p class="full-lead">Bonding dalam kedokteran gigi bertujuan menciptakan perlekatan yang kuat dan tahan lama antara material restorasi dan struktur gigi. Berikut prinsip dan manfaatnya:</p>
+          <div class="reason-grid">
+            <div class="reason-card"><span class="reason-num">01</span><strong>Mikroretensi Mekanis</strong><span class="rdesc">Pengetsaan enamel menciptakan mikroporositas yang diinfiltrasi resin, membentuk retensi mikromekanis yang kuat.</span></div>
+            <div class="reason-card"><span class="reason-num">02</span><strong>Ikatan Kimiawi</strong><span class="rdesc">Beberapa material seperti GIC membentuk ikatan ionik sejati dengan kalsium hidroksiapatit gigi.</span></div>
+            <div class="reason-card"><span class="reason-num">03</span><strong>Preservasi Jaringan</strong><span class="rdesc">Bonding mengurangi kebutuhan preparasi mekanis yang agresif, menjaga lebih banyak struktur gigi sehat.</span></div>
+            <div class="reason-card"><span class="reason-num">04</span><strong>Mencegah Microleakage</strong><span class="rdesc">Penutupan tepi yang rapat oleh adhesive mencegah kebocoran bakteri dan cairan mulut.</span></div>
+            <div class="reason-card"><span class="reason-num">05</span><strong>Mengurangi Sensitivitas</strong><span class="rdesc">Penutupan tubuli dentin mengurangi risiko sensitivitas pasca-restorasi.</span></div>
+          </div>
+        </div>
+        <div class="snum">07 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 — Macam Perlekatan di Kedokteran Gigi (COMPARE SPLIT + heading) -->
+  <div class="row" id="r8">
+    <div class="track">
+      <div class="panel">
+        <div class="compare-inner">
+          <div class="compare-col mech">
+            <div class="eyebrow onmech">MACAM PERLEKATAN DI KEDOKTERAN GIGI</div>
+            <h2>Retensi Mekanis</h2>
+            <p class="compare-desc">Amalgam tidak memiliki ikatan kimiawi terhadap struktur gigi. Retensinya murni interlocking fisik melalui undercut dan dovetail hasil preparasi kavitas konvensional.</p>
+            <div class="compare-img">
+              <!--  GAMBAR: retensi mekanik amalgam -->
+              <img src="retensi-amalgam.jpg" alt="Skematik retensi mekanik amalgam"/>
+            </div>
+            <div class="compare-tags"><span class="ctag">interlocking fisik</span><span class="ctag">tanpa ikatan molekuler</span><span class="ctag">tergantung desain preparasi</span></div>
+          </div>
+          <div class="compare-col chem">
+            <div class="eyebrow">MACAM PERLEKATAN DI KEDOKTERAN GIGI</div>
+            <h2>Adhesi Kimiawi</h2>
+            <p class="compare-desc">GIC membentuk ikatan ionik antara gugus karboksil asam poliakrilat dan ion kalsium hidroksiapatit gigi, menghasilkan ion-exchange layer yang menguat seiring waktu.</p>
+            <div class="compare-img">
+              <!--  GAMBAR: ion exchange layer GIC -->
+              <img src="ion-exchange.jpg" alt="Skematik ikatan GIC dan gigi"/>
+            </div>
+            <div class="compare-tags"><span class="ctag">ikatan ionik</span><span class="ctag">ion-exchange layer</span><span class="ctag">menguat seiring waktu</span></div>
+            <span class="compare-cite">Sidhu &amp; Nicholson, 2016, J Funct Biomater 7(3):16</span>
+          </div>
+        </div>
+        <div class="snum">08 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 — Perlekatan Material Restorasi pada Gigi (1 slide bullet) -->
+  <div class="row" id="r9">
+    <div class="track">
+      <div class="panel">
+        <div class="full-inner">
+          <div class="eyebrow">PERLEKATAN MATERIAL RESTORASI</div>
+          <h2>Perlekatan Material Restorasi <span class="accent">pada Gigi</span></h2>
+          <hr class="divhr"/>
+          <ul style="font-family:sans-serif;font-size:calc(var(--fs-scale) * clamp(.85rem,1.3vw,1.1rem));color:#4a4540;line-height:1.8;max-width:800px;">
+            <li><strong>Amalgam:</strong> retensi mekanis murni melalui undercut dan dovetail preparasi kavitas; tidak ada ikatan kimiawi dengan gigi.</li>
+            <li><strong>Glass Ionomer Cement (GIC):</strong> ikatan kimiawi sejati melalui pertukaran ion antara gugus karboksil dan kalsium hidroksiapatit; membentuk ion-exchange layer.</li>
+            <li><strong>Resin Komposit:</strong> memerlukan adhesive system terpisah; retensi mikromekanis melalui hybrid layer dan resin tag setelah etsa dan priming.</li>
+            <li><strong>Zinc Phosphate Cement:</strong> retensi mekanis melalui interlocking mikro pada permukaan kasar gigi; tidak ada ikatan kimiawi.</li>
+            <li><strong>Polycarboxylate Cement:</strong> ikatan kimiawi terbatas melalui gugus karboksil yang berinteraksi dengan kalsium gigi.</li>
+          </ul>
+        </div>
+        <div class="snum">09 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 — STEPS:4 — Bonding Enamel (pakai gambar asli) -->
+  <div class="row steps-row" id="r10">
+    <div class="track">
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING ENAMEL — 1/4</div>
+            <h2>Struktur <span class="accent">Prisma Enamel</span></h2>
+            <div class="step-indicator">~96% MINERAL</div>
+            <p class="step-desc">Enamel tersusun dari sekitar 96% mineral hidroksiapatit dalam bentuk prisma (rod) yang tersusun rapat dan teratur, dengan sisanya berupa matriks protein dan air. Struktur kristalin yang sangat termineralisasi ini menjadikan enamel substrat ideal untuk teknik etsa asam karena pola pelarutannya bersifat dapat diprediksi.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: enamel rods -->
+            <img src="enamel-rods.png" alt="Struktur prisma enamel"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING ENAMEL — 2/4</div>
+            <h2>Acid Etching <span class="accent">(Buonocore, 1955)</span></h2>
+            <div class="step-indicator">ASAM FOSFAT &middot; MIKROPOROSITAS</div>
+            <p class="step-desc">Buonocore (1955) pertama kali memperkenalkan teknik pengetsaan asam fosfat pada enamel untuk meningkatkan retensi mikromekanis resin. Asam fosfat 37% melarutkan kristal hidroksiapatit pada permukaan dan inti prisma enamel secara selektif, menghasilkan pola mikroporositas yang ditembus resin cair membentuk resin tag. Etsa asam menciptakan tiga pola: tipe I (pelarutan inti prisma), tipe II (pelarutan perifer prisma), dan tipe III (campuran).</p>
+            <div class="step-eq">5Ca(OH)₂ + 3H₃PO₄ ⇌ Ca₅(PO₄)₃(OH) + 9H₂O</div>
+            <p style="font-family:sans-serif;font-size:calc(var(--fs-scale) * clamp(.7rem,1vw,.82rem));color:#aaa;margin-top:.5em;">arah kiri: pelarutan hidroksiapatit saat etsa</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: acid etching enamel -->
+            <img src="enamel-etch.jpg" alt="Proses etsa asam pada enamel"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING ENAMEL — 3/4</div>
+            <h2>SEM Enamel <span class="accent">Pasca-Etsa</span></h2>
+            <div class="step-indicator">GAMBARAN MIKROSKOPIK</div>
+            <p class="step-desc">Setelah dietsa dengan asam fosfat 37% selama 15–30 detik, permukaan enamel menunjukkan pola mikroporositas yang khas di bawah SEM (Scanning Electron Microscope). Gambaran ini memperlihatkan area enamel prismatik yang teretsa dalam, siap diinfiltrasi oleh resin bonding. Mikroporositas ini meningkatkan luas permukaan dan menciptakan retensi mikromekanis yang esensial bagi keberhasilan bonding resin komposit.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: SEM enamel pasca-etsa dari PPTX -->
+            <img src="sem-etch.png" alt="SEM permukaan enamel setelah etsa asam"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING ENAMEL — 4/4</div>
+            <h2>Area Aprismatik &amp; <span class="accent">Selective Etching</span></h2>
+            <div class="step-indicator">TANTANGAN KLINIS</div>
+            <p class="step-desc">Area aprismatik pada permukaan enamel menunjukkan pola etsa yang kurang dapat diprediksi dibanding enamel prismatik. Pada sistem self-etch, etsa yang lebih ringan kerap menghasilkan pola etsa enamel yang lebih dangkal, sehingga sebagian klinisi menerapkan strategi selective enamel etching, yaitu mengetsa enamel secara terpisah dengan asam fosfat sebelum aplikasi self-etch primer pada dentin.</p>
+            <span class="compare-cite">Josic et al., 2022, Dent Mater, 38(3), 472–488</span>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: ilustrasi selective etching -->
+            <img src="self-etch.jpg" alt="Perbandingan etch-and-rinse vs self-etch"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-bar">
+      <div class="step-pip active" data-step="0"><div class="step-pip-dot"></div><div class="step-pip-label">PRISMA ENAMEL</div></div>
+      <div class="step-pip" data-step="1"><div class="step-pip-dot"></div><div class="step-pip-label">ACID ETCHING</div></div>
+      <div class="step-pip" data-step="2"><div class="step-pip-dot"></div><div class="step-pip-label">SEM PASCA-ETSA</div></div>
+      <div class="step-pip" data-step="3"><div class="step-pip-dot"></div><div class="step-pip-label">TANTANGAN</div></div>
+    </div>
+    <div class="snum">10 / 18</div>
+  </div>
+
+  <!-- SLIDE 10 — STEPS:5 — Bonding Dentin (pakai gambar asli) -->
+  <div class="row steps-row" id="r11">
+    <div class="track">
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING DENTIN — 1/5</div>
+            <h2>Karakteristik <span class="accent">Dentin</span></h2>
+            <div class="step-indicator">TUBULI &middot; CAIRAN DENTIN &middot; KOLAGEN</div>
+            <p class="step-desc">Dentin memiliki struktur jauh lebih kompleks dibanding enamel. Tubuli dentin berisi cairan dentin yang mengalir keluar akibat tekanan pulpa, sementara matriks kolagen tipe I menyusun sekitar 20% volume dentin. Kombinasi substrat basah, tubular, dan kaya kolagen ini menjadikan dentin jauh lebih sulit dibonding secara konsisten dibanding enamel.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: struktur dentin -->
+            <img src="dentin.png" alt="Struktur dentin dengan tubuli"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING DENTIN — 2/5</div>
+            <h2>Smear <span class="accent">Layer</span></h2>
+            <div class="step-indicator">DEBRIS PERMUKAAN</div>
+            <p class="step-desc">Preparasi kavitas dengan instrumen rotari meninggalkan smear layer, yaitu lapisan debris organik dan anorganik yang menutupi permukaan dentin dan menyumbat orifisium tubuli dengan smear plug. Smear layer menurunkan permeabilitas dentin sekaligus menjadi penghalang bagi resin adhesive untuk mencapai kolagen dan hidroksiapatit di bawahnya.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: smear layer -->
+            <img src="smear.jpg" alt="Smear layer pada permukaan dentin"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING DENTIN — 3/5</div>
+            <h2>Dentin Conditioner <span class="accent">/ Etsa</span></h2>
+            <div class="step-indicator">MODIFIKASI SMEAR LAYER</div>
+            <p class="step-desc">Dentin conditioner atau etsa asam melarutkan sebagian atau seluruh smear layer, membuka kembali orifisium tubuli, dan melarutkan komponen mineral pada permukaan dentin sehingga jaringan kolagen terekspos sebagai kerangka berpori yang siap diinfiltrasi resin.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: dentin conditioning -->
+            <img src="smear3.jpg" alt="Dentin conditioner membuka tubuli"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING DENTIN — 4/5</div>
+            <h2>Hybrid <span class="accent">Layer & Resin Tag</span></h2>
+            <div class="step-indicator">ZONA INTERDIFUSI RESIN-KOLAGEN</div>
+            <p class="step-desc">Resin monomer menginfiltrasi jaringan kolagen yang terekspos membentuk hybrid layer, yaitu zona interdifusi antara resin dan kolagen dentin, sementara resin yang masuk ke tubuli yang terbuka membentuk resin tag. Hybrid layer dan resin tag bersama-sama menjadi dasar mekanisme retensi mikromekanis pada bonding dentin generasi modern.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: resin tag dan hybrid layer -->
+            <img src="hybrid-layer.png" alt="Resin tag dan hybrid layer pada dentin"/>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">BONDING DENTIN — 5/5</div>
+            <h2>Tantangan <span class="accent">Klinis</span></h2>
+            <div class="step-indicator">KELEMBAPAN &middot; SENSITIVITAS &middot; VARIABILITAS</div>
+            <p class="step-desc">Bonding dentin sangat sensitif terhadap kontrol kelembapan. Dentin yang terlalu kering menyebabkan kolapsnya jaringan kolagen sehingga resin tidak dapat menginfiltrasi secara optimal ke dalam ruang interfibrilar. Sebaliknya, dentin yang terlalu basah (over-wet) meninggalkan lapisan air yang mengganggu polimerisasi resin dan menciptakan celah nano yang melemahkan interface adhesive-dentin.</p>
+            <p class="step-desc">Kedekatan dentin dengan pulpa gigi meningkatkan risiko sensitivitas pasca-operatif akibat iritasi kimiawi dari monomer yang tidak berpolimerisasi sempurna. Variabilitas teknik antar operator—mulai dari waktu etsa, teknik pengeringan, hingga ketebalan aplikasi adhesive—menjadi sumber utama inkonsistensi hasil bonding dentin di klinik. Oleh karena itu, bonding dentin memerlukan protokol yang ketat dan pemahaman mendalam tentang substrat dentin yang dinamis.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: tantangan klinis dentin bonding -->
+            <img src="dentin-moist.jpg" alt="Ilustrasi tantangan kelembapan pada bonding dentin"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-bar">
+      <div class="step-pip active" data-step="0"><div class="step-pip-dot"></div><div class="step-pip-label">KARAKTERISTIK</div></div>
+      <div class="step-pip" data-step="1"><div class="step-pip-dot"></div><div class="step-pip-label">SMEAR LAYER</div></div>
+      <div class="step-pip" data-step="2"><div class="step-pip-dot"></div><div class="step-pip-label">KONDITIONER</div></div>
+      <div class="step-pip" data-step="3"><div class="step-pip-dot"></div><div class="step-pip-label">HYBRID LAYER</div></div>
+      <div class="step-pip" data-step="4"><div class="step-pip-dot"></div><div class="step-pip-label">TANTANGAN KLINIS</div></div>
+    </div>
+    <div class="snum">11 / 18</div>
+  </div>
+
+  <!-- SLIDE 11 — 5 Faktor Keberhasilan (bullet + gambar kanan) -->
+  <div class="row" id="r12">
+    <div class="track">
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">FAKTOR KEBERHASILAN ADHESI</div>
+            <h2>5 Faktor <span class="accent">Keberhasilan</span></h2>
+            <div class="step-indicator">WETTABILITY &middot; VISKOSITAS &middot; KEKASARAN &middot; RETENSI &middot; IKATAN KIMIAWI</div>
+            <ul style="font-family:sans-serif;font-size:calc(var(--fs-scale) * clamp(.78rem,1.1vw,.9rem));color:#aaa;line-height:1.8;margin-top:1em;max-width:36em;">
+              <li><strong>Wettability:</strong> kemampuan adhesive membasahi permukaan gigi; sudut kontak rendah menandakan pembasahan baik.</li>
+              <li><strong>Viskositas:</strong> adhesive dengan viskositas rendah lebih mudah mengalir ke mikroporositas hasil etsa.</li>
+              <li><strong>Kekasaran Permukaan:</strong> permukaan yang dietsa atau diperparasi menciptakan luas permukaan lebih besar untuk retensi.</li>
+              <li><strong>Retensi Mikromekanis:</strong> resin tag dan hybrid layer memberikan interlocking pada level mikroskopik.</li>
+              <li><strong>Ikatan Kimiawi:</strong> pada material seperti GIC, ikatan ionik memberikan kontribusi tambahan pada kekuatan perlekatan.</li>
+            </ul>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: adhesi yang baik (dari PPTX) -->
+            <img src="good.png" alt="Ilustrasi adhesi yang baik pada permukaan gigi"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="snum">12 / 18</div>
+  </div>
+
+  <!-- SLIDE 12 — STEPS:8 — Evolusi Generasi Bonding Agent -->
+  <div class="row steps-row" id="r13">
+    <div class="track">
+      <!-- GEN 1 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 1/8</div>
+            <h2>Generasi <span class="accent">1</span></h2>
+            <div class="step-indicator">SILANE COUPLING AGENT</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi pertama bonding agent menggunakan silane coupling agent untuk menciptakan ikatan antara resin dan enamel.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> kekuatan ikatan sangat rendah, hanya bekerja pada enamel, tidak efektif pada dentin.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> langkah pionir dalam bonding gigi. <strong>Kekurangan:</strong> kekuatan ikatan tidak memadai untuk aplikasi klinis.</p>
+            <p class="step-desc"><strong>Teknik:</strong> aplikasi langsung silane pada enamel tanpa etsa terpisah.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 1 -->
+            
+          </div>
+        </div>
+      </div>
+      <!-- GEN 2 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 2/8</div>
+            <h2>Generasi <span class="accent">2</span></h2>
+            <div class="step-indicator">ENAMEL BONDING AGENT</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi kedua masih berfokus pada bonding enamel dengan formulasi yang sedikit ditingkatkan.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> masih sangat lemah pada dentin, kekuatan ikatan enamel sedikit meningkat.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> aplikasi lebih mudah dari generasi 1. <strong>Kekurangan:</strong> tetap tidak efektif pada dentin.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 2 -->
+
+          </div>
+        </div>
+      </div>
+      <!-- GEN 3 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 3/8</div>
+            <h2>Generasi <span class="accent">3</span></h2>
+            <div class="step-indicator">DENTIN CONDITIONER DIPERKENALKAN</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi ketiga memperkenalkan dentin conditioner sebagai langkah terpisah untuk memodifikasi smear layer.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> mulai efektif pada dentin meski kekuatan ikatan masih di bawah standar modern. Material yang digunakan: asam maleat, EDTA, atau asam nitrat encer sebagai conditioner.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> bonding dentin pertama yang dapat diterima. <strong>Kekurangan:</strong> multi-step, teknik sensitif, kekuatan ikatan bervariasi.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 3 -->
+
+          </div>
+        </div>
+      </div>
+      <!-- GEN 4 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 4/8</div>
+            <h2>Generasi <span class="accent">4</span></h2>
+            <div class="step-indicator">ETCH-AND-RINSE 3-STEP</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi keempat menerapkan teknik etch-and-rinse dengan tiga langkah terpisah: etsa asam fosfat, primer, dan bonding resin.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> kekuatan ikatan tinggi dan konsisten pada enamel maupun dentin. Material: asam fosfat 37%, primer aseton/etanol, bonding resin Bis-GMA.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> gold standard kekuatan ikatan. <strong>Kekurangan:</strong> prosedur panjang, teknik sensitif, risiko over-etching dentin.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 4 -->
+            <img src="generasi.jpg" alt="generasi bonding"/>
+          </div>
+        </div>
+      </div>
+      <!-- GEN 5 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 5/8</div>
+            <h2>Generasi <span class="accent">5</span></h2>
+            <div class="step-indicator">ETCH-AND-RINSE 2-STEP</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi kelima menyederhanakan etch-and-rinse menjadi 2 langkah dengan menggabungkan primer dan bonding resin dalam satu botol.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> kekuatan ikatan setara generasi 4 dengan prosedur lebih sederhana. Material: asam fosfat + combined primer-adhesive.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> lebih cepat, tetap andal. <strong>Kekurangan:</strong> tetap memerlukan etsa terpisah dan pembilasan.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 5 -->
+            
+            <img src="5.jpg" alt="Produk bonding generasi 5"/>
+          </div>
+        </div>
+      </div>
+      <!-- GEN 6 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 6/8</div>
+            <h2>Generasi <span class="accent">6</span></h2>
+            <div class="step-indicator">SELF-ETCH 2-STEP</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi keenam menggunakan self-etch primer yang mengandung monomer asam, menghilangkan langkah etsa dan pembilasan terpisah.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> dua langkah: self-etch primer + bonding resin. Material: monomer asam (MDP, 4-META) dalam primer, bonding resin terpisah.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> tidak perlu pembilasan, mengurangi risiko over-drying. <strong>Kekurangan:</strong> etsa enamel lebih dangkal dibanding asam fosfat.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 6 -->
+            <img src="6.jpg" alt="Produk bonding generasi 6"/>
+          </div>
+        </div>
+      </div>
+      <!-- GEN 7 -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 7/8</div>
+            <h2>Generasi <span class="accent">7</span></h2>
+            <div class="step-indicator">SELF-ETCH 1-STEP (ALL-IN-ONE)</div>
+            <p class="step-desc"><strong>Pengertian:</strong> generasi ketujuh menggabungkan etsa, primer, dan bonding resin dalam satu botol (all-in-one).</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> prosedur paling sederhana pada masanya. Material: campuran monomer asam hidrofilik, HEMA, dan monomer hidrofobik dalam satu larutan.</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> sangat cepat, satu langkah aplikasi. <strong>Kekurangan:</strong> kekuatan ikatan lebih rendah dibanding generasi 4-5, rentan terhadap phase separation.</p>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 7 -->
+            <img src="7.jpg" alt="Produk bonding generasi 7"/>
+          </div>
+        </div>
+      </div>
+      <!-- GEN 8+/Universal -->
+      <div class="panel">
+        <div class="process-panel">
+          <div class="pp-left">
+            <div class="eyebrow light">EVOLUSI GENERASI BONDING AGENT — 8/8</div>
+            <h2>Generasi <span class="accent">8+ / Universal</span></h2>
+            <div class="step-indicator">UNIVERSAL ADHESIVE &middot; MULTI-MODE</div>
+            <p class="step-desc"><strong>Pengertian:</strong> adhesive universal dapat digunakan dalam mode etch-and-rinse, self-etch, atau selective etching dalam satu produk.</p>
+            <p class="step-desc"><strong>Karakteristik:</strong> mengandung monomer fungsional MDP untuk ikatan kimiawi jangka panjang terhadap hidroksiapatit. Kompatibel dengan berbagai material restorasi (komposit, semen resin, GIC).</p>
+            <p class="step-desc"><strong>Kelebihan:</strong> fleksibilitas teknik, ikatan kimiawi stabil, shelf life panjang. <strong>Kekurangan:</strong> harga lebih tinggi, beberapa produk masih menunjukkan variabilitas klinis.</p>
+            <span class="compare-cite">Van Meerbeek et al., 2020, J Adhes Dent, 22(1), 7–34</span>
+          </div>
+          <div class="pp-right">
+            <!--  GAMBAR: foto produk generasi 8/universal -->
+            <img src="8.jpg" alt="Produk bonding generasi 8 universal"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-bar">
+      <div class="step-pip active" data-step="0"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 1</div></div>
+      <div class="step-pip" data-step="1"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 2</div></div>
+      <div class="step-pip" data-step="2"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 3</div></div>
+      <div class="step-pip" data-step="3"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 4</div></div>
+      <div class="step-pip" data-step="4"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 5</div></div>
+      <div class="step-pip" data-step="5"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 6</div></div>
+      <div class="step-pip" data-step="6"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 7</div></div>
+      <div class="step-pip" data-step="7"><div class="step-pip-dot"></div><div class="step-pip-label">GEN 8+</div></div>
+    </div>
+    <div class="snum">13 / 18</div>
+  </div>
+
+  <!-- SLIDE 13 — RINGKASAN (tanpa SVG) -->
+  <div class="row" id="r14">
+    <div class="track">
+      <div class="panel">
+        <div class="sajian-inner">
+          <div class="sajian-left" style="width:100%;flex:1 1 100%;">
+            <div class="eyebrow light">RINGKASAN</div>
+            <h2>Satu Prinsip,<br><span class="accent">Banyak Mekanisme</span></h2>
+            <div class="sajian-tips">
+              <div class="stip"><span class="stip-marker">01</span><span>Kekuatan perlekatan tersusun dalam hierarki: dari retensi mekanis murni pada amalgam, ikatan kimiawi sejati pada GIC, hingga retensi mikromekanis kompleks pada resin komposit yang dibantu adhesive system.</span></div>
+              <div class="stip"><span class="stip-marker">02</span><span>Smear layer dan hybrid layer adalah dua konsep kunci yang membedakan bonding dentin dari bonding enamel, dan menjadi penentu utama keberhasilan klinis restorasi resin pada dentin.</span></div>
+              <div class="stip"><span class="stip-marker">03</span><span>Evolusi delapan generasi dental bonding bergerak menuju prosedur yang lebih sederhana dan minim sensitivitas teknik, bermuara pada adhesive universal yang fleksibel terhadap berbagai strategi etsa.</span></div>
+              <div class="stip"><span class="stip-marker">04</span><span>Pemahaman mekanisme perlekatan—bukan sekadar nama produk atau generasi—adalah dasar untuk memilih material dan teknik restorasi yang tepat sesuai indikasi klinis.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="snum">14 / 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE PENUTUP — TERIMA KASIH -->
+  <div class="row" id="rlast">
+    <div class="track">
+      <div class="panel" style="background:var(--dark);display:flex;align-items:center;justify-content:center;">
+        <h1 style="font-family:Georgia,serif;font-size:clamp(3rem,10vw,8rem);color:var(--primary);text-align:center;line-height:1.1;">
+          Terima Kasih
+        </h1>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Arrow buttons -->
+<button class="nav-arrow" id="arr-up" aria-label="Slide sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+<button class="nav-arrow" id="arr-down" aria-label="Slide berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+<button class="nav-arrow" id="arr-left" aria-label="Sub-slide sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+<button class="nav-arrow" id="arr-right" aria-label="Sub-slide berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+
+<button id="btn-fullscreen" aria-label="Mode layar penuh">
+  <span class="fs-label">Full Screen</span>
+</button>
+
+<div id="font-ctrl">
+  <button id="font-dec" aria-label="Perkecil teks">A−</button>
+  <span id="font-pct">175%</span>
+  <button id="font-inc" aria-label="Perbesar teks">A+</button>
+</div>
+
+<script>
+const N_ROWS = 18;
+const LIGHT_BG_ROWS = new Set([1, 5, 6, 7, 13, 14, 17]);
+
+const outer = document.getElementById('outer');
+const rows = Array.from(document.querySelectorAll('.row'));
+const vdots = Array.from(document.querySelectorAll('.vdot'));
+const arrUp = document.getElementById('arr-up');
+const arrDown = document.getElementById('arr-down');
+const arrLeft = document.getElementById('arr-left');
+const arrRight = document.getElementById('arr-right');
+
+let curRow = 0;
+const curStepMap = {};
+
+function isStepsRow(i) { return rows[i].classList.contains('steps-row'); }
+function nStepsOf(i) { return rows[i].querySelectorAll('.step-pip').length; }
+function trackOf(i) { return rows[i].querySelector('.track'); }
+function pipsOf(i) { return Array.from(rows[i].querySelectorAll('.step-pip')); }
+
+function getVisibleRow() {
+  const mid = outer.scrollTop + outer.clientHeight / 2;
+  let best = 0, bestD = Infinity;
+  rows.forEach((r,i) => { const d = Math.abs(r.offsetTop + r.offsetHeight/2 - mid); if(d<bestD){bestD=d;best=i;} });
+  return best;
+}
+function syncVdots(i) { vdots.forEach((d,j) => d.classList.toggle('active', j===i)); }
+function updateArrows(row) {
+  const steps = isStepsRow(row);
+  const step = curStepMap[row] || 0;
+  const n = steps ? nStepsOf(row) : 0;
+  arrUp.classList.toggle('visible', row > 0);
+  arrDown.classList.toggle('visible', row < N_ROWS-1);
+  arrLeft.classList.toggle('visible', steps && step > 0);
+  arrRight.classList.toggle('visible', steps && step < n-1);
+  document.body.classList.toggle('bg-light', LIGHT_BG_ROWS.has(row));
+}
+function goStep(rowIndex, n) {
+  if(!isStepsRow(rowIndex)) return;
+  const total = nStepsOf(rowIndex);
+  if(n<0||n>=total) return;
+  curStepMap[rowIndex] = n;
+  trackOf(rowIndex).style.transform = `translateX(-${n*100}vw)`;
+  pipsOf(rowIndex).forEach((p,i) => p.classList.toggle('active', i===n));
+  updateArrows(rowIndex);
+}
+outer.addEventListener('scroll', () => {
+  const r = getVisibleRow();
+  if(r!==curRow){ curRow=r; syncVdots(r); updateArrows(r); }
+}, { passive:true });
+vdots.forEach((d,i) => d.addEventListener('click', () => rows[i].scrollIntoView({behavior:'smooth'})));
+document.querySelectorAll('.step-pip').forEach(p => {
+  p.addEventListener('click', () => {
+    const rowEl = p.closest('.row');
+    const rowIdx = rows.indexOf(rowEl);
+    goStep(rowIdx, parseInt(p.dataset.step));
+  });
+});
+arrUp.addEventListener('click', () => { if(curRow>0) rows[curRow-1].scrollIntoView({behavior:'smooth'}); });
+arrDown.addEventListener('click', () => { if(curRow<N_ROWS-1) rows[curRow+1].scrollIntoView({behavior:'smooth'}); });
+arrLeft.addEventListener('click', () => { if(isStepsRow(curRow)) goStep(curRow, (curStepMap[curRow]||0)-1); });
+arrRight.addEventListener('click', () => { if(isStepsRow(curRow)) goStep(curRow, (curStepMap[curRow]||0)+1); });
+document.addEventListener('keydown', e => {
+  const r = getVisibleRow();
+  if(['ArrowDown','PageDown'].includes(e.key)){ e.preventDefault(); if(r<N_ROWS-1) rows[r+1].scrollIntoView({behavior:'smooth'}); }
+  if(['ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); if(r>0) rows[r-1].scrollIntoView({behavior:'smooth'}); }
+  if(isStepsRow(r)){
+    const step = curStepMap[r] || 0;
+    if(e.key==='ArrowRight'){ e.preventDefault(); goStep(r, step+1); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); goStep(r, step-1); }
+  }
+  if(e.key===' '){
+    e.preventDefault();
+    const step = curStepMap[r] || 0;
+    if(isStepsRow(r) && step < nStepsOf(r)-1) goStep(r, step+1);
+    else if(r<N_ROWS-1) rows[r+1].scrollIntoView({behavior:'smooth'});
+  }
+});
+
+let touchStartX=0, touchStartY=0, touchLocked=null, touchRowIdx=null;
+document.querySelectorAll('.steps-row').forEach(el => {
+  el.addEventListener('touchstart', e => {
+    if(e.touches.length>1){ touchLocked='zoom'; return; }
+    touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; touchLocked=null;
+    touchRowIdx = rows.indexOf(el);
+  }, {passive:true});
+  el.addEventListener('touchmove', e => {
+    if(touchLocked==='v'||touchLocked==='zoom'||e.touches.length>1) return;
+    const dx=e.touches[0].clientX-touchStartX, dy=e.touches[0].clientY-touchStartY;
+    if(touchLocked===null && (Math.abs(dx)>6||Math.abs(dy)>6)) touchLocked = Math.abs(dx)>Math.abs(dy)?'h':'v';
+    if(touchLocked==='h') e.preventDefault();
+  }, {passive:false});
+  el.addEventListener('touchend', e => {
+    if(touchLocked!=='h') return;
+    const dx=e.changedTouches[0].clientX-touchStartX;
+    if(Math.abs(dx)>40 && getVisibleRow()===touchRowIdx){
+      const step = curStepMap[touchRowIdx] || 0;
+      if(dx<0) goStep(touchRowIdx, step+1); else goStep(touchRowIdx, step-1);
+    }
+    touchLocked=null;
+  }, {passive:true});
+  let wheelDebounce=false;
+  el.addEventListener('wheel', e => {
+    const rowIdx = rows.indexOf(el);
+    if(getVisibleRow()!==rowIdx) return;
+    const absDx=Math.abs(e.deltaX), absDy=Math.abs(e.deltaY);
+    if(absDx<10||absDy>absDx) return;
+    e.preventDefault();
+    if(wheelDebounce) return;
+    wheelDebounce=true;
+    setTimeout(()=>{ wheelDebounce=false; },600);
+    const step = curStepMap[rowIdx] || 0;
+    if(e.deltaX>0) goStep(rowIdx, step+1); else goStep(rowIdx, step-1);
+  }, {passive:false});
+});
+updateArrows(0);
+
+const btnFS = document.getElementById('btn-fullscreen');
+const fsLabel = btnFS.querySelector('.fs-label');
+function isFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+}
+function enterFullscreen(el) {
+  if(el.requestFullscreen) return el.requestFullscreen();
+  if(el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+  if(el.msRequestFullscreen) return el.msRequestFullscreen();
+}
+function exitFullscreen() {
+  if(document.exitFullscreen) return document.exitFullscreen();
+  if(document.webkitExitFullscreen) return document.webkitExitFullscreen();
+  if(document.msExitFullscreen) return document.msExitFullscreen();
+}
+function syncFSLabel() {
+  const full = isFullscreen();
+  btnFS.classList.toggle('is-full', full);
+  fsLabel.textContent = full ? 'Exit Full Screen' : 'Full Screen';
+}
+btnFS.addEventListener('click', () => {
+  if(isFullscreen()) exitFullscreen(); else enterFullscreen(document.documentElement);
+});
+['fullscreenchange','webkitfullscreenchange','MSFullscreenChange'].forEach(evt => {
+  document.addEventListener(evt, syncFSLabel);
+});
+
+const rootEl = document.documentElement;
+const fontDec = document.getElementById('font-dec');
+const fontInc = document.getElementById('font-inc');
+const fontPct = document.getElementById('font-pct');
+const FS_STEP = 0.1;
+let fsScale = 1.75;
+
+function fsBounds() {
+  const cs = getComputedStyle(rootEl);
+  const min = parseFloat(cs.getPropertyValue('--fs-min')) || 1.5;
+  const max = parseFloat(cs.getPropertyValue('--fs-max')) || 2.2;
+  return { min, max };
+}
+function applyFontScale() {
+  const { min, max } = fsBounds();
+  fsScale = Math.min(max, Math.max(min, fsScale));
+  rootEl.style.setProperty('--fs-scale', fsScale);
+  fontPct.textContent = Math.round(fsScale * 100) + '%';
+  fontDec.disabled = fsScale <= min + 0.001;
+  fontInc.disabled = fsScale >= max - 0.001;
+}
+fontDec.addEventListener('click', () => { fsScale -= FS_STEP; applyFontScale(); });
+fontInc.addEventListener('click', () => { fsScale += FS_STEP; applyFontScale(); });
+window.addEventListener('resize', applyFontScale);
+applyFontScale();
+</script>
+</body>
+</html>
