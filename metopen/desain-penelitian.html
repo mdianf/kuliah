@@ -1,0 +1,2805 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Desain Penelitian — Metodologi Penelitian FKG UNISSULA</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display:ital@0;1&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Warm Nude palette ── */
+  --nude-bg:     #e8ddd4;
+  --nude-surf:   #ede5dc;
+  --nude-hi:     #f5efe8;
+  --nude-sd:     #c8bbb0;   /* shadow dark */
+  --nude-sl:     #ffffff;   /* shadow light */
+  --rose:        #c4857e;
+  --text-dk:     #3a2c24;
+  --text-md:     #6b5b50;
+  --text-lt:     #9a8878;
+
+  /* ── Dark palette ── */
+  --dark-bg:     #111820;
+  --dark-surf:   #18222e;
+  --dark-hi:     #1e2c3a;
+  --dark-sd:     #0a1016;
+  --dark-sl:     #243040;
+  --sky:         #7ec8c8;
+  --text-d:      #ddeae8;
+  --text-dm:     #8aacaa;
+
+  /* ── Typography ── */
+  --fb: 'DM Sans', system-ui, sans-serif;
+  --fd: 'DM Serif Display', Georgia, serif;
+  --fs: 1;               /* font-scale, controlled by A+/A- */
+
+  /* ── Spacing ── */
+  --pad: clamp(1rem, 3.5vw, 2.8rem);
+  --gap: clamp(0.5rem, 1.5vh, 1.2rem);
+  --r:   16px;           /* border-radius cards */
+
+  /* ── Transition ── */
+  --ts: 0.58s;
+  --te: cubic-bezier(0.77,0,0.175,1);
+
+  /* ── UI buttons ── */
+  --usz: clamp(26px, 3.4vw, 33px);
+
+  /* ── JS-controlled zoom ── */
+  --zoom: 1;
+}
+
+html, body {
+  width:100%; height:100%;
+  overflow:hidden;
+  font-family: var(--fb);
+  background:#0a0f14;
+  /* Disable native touch gestures so JS can intercept pinch */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DECK ENGINE
+═══════════════════════════════════════════════════════ */
+#deck {
+  position:fixed; inset:0; overflow:hidden;
+}
+
+/* Zoom wrapper — wraps all slides, scaled from center */
+#zoom-wrap {
+  position:absolute; inset:0;
+  transform-origin: center center;
+  transform: scale(var(--zoom));
+  transition: transform 0.1s ease-out;
+}
+
+.topic-col {
+  position:absolute; inset:0;
+  transition: transform var(--ts) var(--te);
+}
+
+.slide {
+  position:absolute; top:0; left:0;
+  width:100vw; height:100vh;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+  transition: transform var(--ts) var(--te);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SLIDE LAYOUT
+═══════════════════════════════════════════════════════ */
+.slide-inner {
+  display:flex; flex-direction:column;
+  width:100%; height:100%;
+  padding: var(--pad);
+  gap: var(--gap);
+  overflow:hidden;
+}
+
+.slide-header { flex:none; display:flex; flex-direction:column; gap:0.35em; }
+
+.slide-topic-label {
+  font-size: calc(clamp(0.55rem, 1.4vw, 0.68rem) * var(--fs));
+  font-weight:600; letter-spacing:0.14em; text-transform:uppercase;
+}
+
+.slide-title {
+  font-family: var(--fd);
+  font-size: calc(clamp(1.3rem, 5vw, 2.8rem) * var(--fs));
+  line-height:1.1;
+  /* Prevent overflow on narrow screens */
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Portrait phones: smaller title */
+@media (orientation:portrait) and (max-width:520px) {
+  .slide-title {
+    font-size: calc(clamp(1.2rem, 6.5vw, 2rem) * var(--fs)) !important;
+  }
+}
+
+.slide-subtitle {
+  font-size: calc(clamp(0.78rem, 2.2vw, 1.15rem) * var(--fs));
+  font-weight:300; font-style:italic; line-height:1.4;
+}
+
+.divider {
+  flex:none; height:3px;
+  width:clamp(36px,5vw,52px);
+  border-radius:3px; margin:0.15em 0;
+}
+
+.slide-body {
+  flex:1; min-height:0;
+  display:flex; flex-direction:column;
+  gap: var(--gap); overflow:hidden;
+}
+
+.slide-body p {
+  font-size: calc(clamp(0.82rem, 2.4vw, 1.25rem) * var(--fs));
+  line-height:1.65;
+}
+
+.slide-body ul, .slide-body ol {
+  padding-left:1.15em;
+  display:flex; flex-direction:column; gap:0.38em;
+}
+
+.slide-body li {
+  font-size: calc(clamp(0.8rem, 2.2vw, 1.2rem) * var(--fs));
+  line-height:1.5;
+}
+
+.slide-body h3 {
+  font-family: var(--fd);
+  font-size: calc(clamp(0.95rem, 2.8vw, 1.6rem) * var(--fs));
+  line-height:1.2; margin-bottom:0.2em;
+}
+
+/* ── Quote ── */
+.slide-quote {
+  font-style:italic;
+  font-size: calc(clamp(0.82rem, 2.2vw, 1.25rem) * var(--fs));
+  line-height:1.6;
+  padding: clamp(0.7rem,2vw,1.2rem) clamp(0.9rem,2.5vw,1.6rem);
+  border-radius: var(--r);
+  border-left-width:3px; border-left-style:solid;
+}
+
+/* ── Columns ── */
+.slide-cols {
+  flex:1; min-height:0;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap: clamp(0.7rem,2vw,1.5rem);
+}
+@media (orientation:portrait) and (max-width:520px) {
+  .slide-cols { grid-template-columns:1fr; }
+}
+
+.slide-col {
+  display:flex; flex-direction:column; gap:0.45em;
+  overflow:hidden; border-radius:var(--r);
+  padding: clamp(0.65rem,2vw,1.1rem);
+}
+
+/* ── Highlight box ── */
+.highlight-box {
+  border-radius: var(--r);
+  padding: clamp(0.65rem,2vw,1.1rem);
+}
+
+/* ── Image area ── */
+.slide-img {
+  flex:1; min-height:0;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; border-radius:var(--r); position:relative;
+}
+.slide-img img { max-width:100%; max-height:100%; object-fit:contain; border-radius:calc(var(--r) - 3px); }
+.img-placeholder {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:0.5em; opacity:0.4;
+  font-size:calc(0.72rem * var(--fs)); letter-spacing:0.07em; text-transform:uppercase;
+}
+
+/* ── Footer ── */
+.slide-footer {
+  flex:none; display:flex; align-items:center;
+  justify-content:space-between; opacity:0.45; margin-top:auto; padding-top:0.2em;
+}
+.slide-footer-text { font-size:calc(0.58rem * var(--fs)); letter-spacing:0.1em; text-transform:uppercase; }
+.progress-dots { display:flex; gap:5px; align-items:center; }
+.progress-dots span {
+  width:6px; height:6px; border-radius:50%; background:currentColor;
+  opacity:0.22; transition:opacity .3s, transform .3s;
+}
+.progress-dots span.active { opacity:1; transform:scale(1.5); }
+
+/* ═══════════════════════════════════════════════════════
+   SOFT NEUMORPHIC SHADOW MIXIN
+   Key: large blur-radius + LOW spread + near-bg color
+   This produces diffuse, natural-looking depth.
+═══════════════════════════════════════════════════════ */
+
+/* ── Nude (light) card shadow ── */
+.nude-card {
+  background: var(--nude-surf);
+  box-shadow:
+    8px  8px 20px  0px rgba(170,152,140, 0.55),   /* bottom-right shadow */
+   -5px -5px 14px  0px rgba(255,255,255, 0.80),   /* top-left highlight */
+    0    1px  3px  0px rgba(0,0,0,0.04);           /* micro depth */
+}
+
+/* ── Dark card shadow ── */
+.dark-card {
+  background: var(--dark-surf);
+  box-shadow:
+    7px  7px 18px  0px rgba(6,10,14, 0.70),
+   -4px -4px 12px  0px rgba(38,52,62, 0.55),
+    0    1px  2px  0px rgba(0,0,0,0.15);
+}
+
+/* ═══════════════════════════════════════════════════════
+   THEMES
+═══════════════════════════════════════════════════════ */
+
+/* Cover — warm nude */
+.th-nude-cover {
+  background: linear-gradient(145deg, #ddd0c4 0%, #e8ddd4 55%, #d5c8bc 100%);
+  color: var(--text-dk);
+}
+.th-nude-cover .slide-inner { justify-content:center; }
+.th-nude-cover .divider { background:var(--rose); }
+.th-nude-cover .slide-topic-label { color:var(--rose); }
+.th-nude-cover .cover-meta { opacity:0.5; font-size:calc(0.76rem * var(--fs)); line-height:2; margin-top:1.2rem; }
+
+/* Nude standard */
+.th-nude {
+  background: var(--nude-bg);
+  color: var(--text-dk);
+}
+.th-nude .divider { background:var(--rose); }
+.th-nude .slide-topic-label { color:var(--rose); }
+.th-nude .slide-col,
+.th-nude .highlight-box,
+.th-nude .slide-img { @extend .nude-card; }
+.th-nude .slide-col,
+.th-nude .highlight-box,
+.th-nude .slide-img {
+  background: var(--nude-surf);
+  box-shadow:
+    8px  8px 22px  0px rgba(165,148,136, 0.50),
+   -5px -5px 14px  0px rgba(255,255,255, 0.82),
+    0    1px  3px  0px rgba(0,0,0,0.03);
+}
+.th-nude .slide-quote {
+  background: var(--nude-surf);
+  border-left-color: var(--rose);
+  color: var(--text-md);
+  box-shadow:
+    6px  6px 18px  0px rgba(165,148,136, 0.45),
+   -4px -4px 12px  0px rgba(255,255,255, 0.80);
+}
+.th-nude code {
+  background:var(--nude-hi);
+  padding:2px 6px; border-radius:6px;
+  box-shadow: inset 3px 3px 7px rgba(165,148,136,0.4), inset -2px -2px 5px rgba(255,255,255,0.7);
+}
+
+/* Rose */
+.th-rose {
+  background: linear-gradient(145deg, #f0e0da 0%, #ecd6d0 100%);
+  color: var(--text-dk);
+}
+.th-rose .divider { background:#b07068; }
+.th-rose .slide-topic-label { color:#a06060; }
+.th-rose .slide-col,
+.th-rose .highlight-box,
+.th-rose .slide-img,
+.th-rose .slide-quote {
+  background: #f5e5e0;
+  box-shadow:
+    8px  8px 20px  0px rgba(155,118,112, 0.48),
+   -5px -5px 13px  0px rgba(255,255,255, 0.82);
+}
+.th-rose .slide-quote { border-left-color:#b07068; color:var(--text-md); }
+
+/* Sage */
+.th-sage {
+  background: linear-gradient(145deg, #dce8dc 0%, #d2e0d2 100%);
+  color: #263424;
+}
+.th-sage .divider { background:#5a7a5a; }
+.th-sage .slide-topic-label { color:#4a6848; }
+.th-sage .slide-col,
+.th-sage .highlight-box,
+.th-sage .slide-img,
+.th-sage .slide-quote {
+  background: #e4ede4;
+  box-shadow:
+    7px  7px 18px  0px rgba(140,160,138, 0.48),
+   -5px -5px 13px  0px rgba(255,255,255, 0.80);
+}
+.th-sage .slide-quote { border-left-color:#5a7a5a; color:#4a6048; }
+
+/* Dark cover */
+.th-dark-cover {
+  background: linear-gradient(145deg, #0e1520 0%, #121c28 60%, #1a2638 100%);
+  color: var(--text-d);
+}
+.th-dark-cover .slide-inner { justify-content:center; }
+.th-dark-cover .divider { background:var(--sky); }
+.th-dark-cover .slide-topic-label { color:var(--sky); }
+.th-dark-cover .slide-title { color:#eef4f2; }
+.th-dark-cover .slide-subtitle { color:var(--text-dm); font-style:normal; }
+.th-dark-cover .cover-meta { opacity:0.42; font-size:calc(0.76rem * var(--fs)); line-height:2; margin-top:1.2rem; }
+
+/* Dark teal */
+.th-dark {
+  background: var(--dark-bg);
+  color: var(--text-d);
+}
+.th-dark .divider { background:var(--sky); }
+.th-dark .slide-topic-label { color:var(--sky); }
+.th-dark .slide-col,
+.th-dark .highlight-box,
+.th-dark .slide-img {
+  background: var(--dark-surf);
+  box-shadow:
+    7px  7px 20px  0px rgba(5,9,14, 0.72),
+   -4px -4px 12px  0px rgba(32,46,58, 0.60),
+    0    1px  2px  0px rgba(0,0,0,0.2);
+}
+.th-dark .slide-quote {
+  background: var(--dark-surf);
+  border-left-color: var(--sky);
+  color: var(--text-dm);
+  box-shadow:
+    6px  6px 16px  0px rgba(5,9,14, 0.68),
+   -3px -3px 10px  0px rgba(32,46,58, 0.55);
+}
+.th-dark code {
+  background: var(--dark-hi);
+  padding:2px 6px; border-radius:6px;
+  box-shadow: inset 3px 3px 7px rgba(4,8,12,0.6), inset -2px -2px 5px rgba(36,52,64,0.5);
+}
+
+/* slide-inner selalu visible — tidak ada fade */
+.slide-inner { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════
+   CUSTOM PALETTE — Steel Blue & Coral (Desain Penelitian)
+═══════════════════════════════════════════════════════ */
+:root {
+  --sb-deep:   #3d5a80;   /* steel blue deep */
+  --sb-mid:    #98c1d9;   /* steel blue mid */
+  --sb-light:  #e0fbfc;   /* pale cyan */
+  --coral:     #ee6c4d;   /* coral accent */
+  --navy:      #293241;   /* dark navy */
+
+  --sb-bg:     #d8eaf4;   /* light tinted bg */
+  --sb-surf:   #e4f0f8;
+  --sb-hi:     #f0f7fc;
+  --sb-sd:     #b0cce0;
+  --sb-sl:     #ffffff;
+
+  --coral-hi:  #f5956e;
+  --coral-dk:  #c24e2e;
+
+  --navy-surf: #1e2a3a;
+  --navy-hi:   #263548;
+  --navy-sd:   #14202c;
+  --navy-sl:   #2e4058;
+
+  --text-sb-dk: #1a2e42;
+  --text-sb-md: #3d5a7a;
+  --text-sb-lt: #6a92b0;
+  --text-nv:    #d8eaf4;
+  --text-nv-m:  #8ab0cc;
+}
+
+/* ── Cover: Navy deep ── */
+.th-sb-cover {
+  background: linear-gradient(145deg, #1e2a3a 0%, #293241 55%, #1a2230 100%);
+  color: var(--text-nv);
+}
+.th-sb-cover .slide-inner { justify-content: center; }
+.th-sb-cover .divider { background: var(--coral); }
+.th-sb-cover .slide-topic-label { color: var(--sb-mid); }
+.th-sb-cover .slide-title { color: #e8f4fc; }
+.th-sb-cover .slide-subtitle { color: var(--text-nv-m); font-style: normal; }
+.th-sb-cover .cover-meta {
+  opacity: 0.5;
+  font-size: calc(0.76rem * var(--fs));
+  line-height: 2;
+  margin-top: 1.2rem;
+}
+
+/* ── Steel Blue (light) — main content ── */
+.th-sb {
+  background: var(--sb-bg);
+  color: var(--text-sb-dk);
+}
+.th-sb .divider { background: var(--coral); }
+.th-sb .slide-topic-label { color: var(--sb-deep); }
+.th-sb .slide-col,
+.th-sb .highlight-box,
+.th-sb .slide-img {
+  background: var(--sb-surf);
+  box-shadow:
+    8px  8px 22px 0px rgba(100,140,175, 0.40),
+   -5px -5px 14px 0px rgba(255,255,255, 0.85),
+    0    1px  3px 0px rgba(0,0,0,0.03);
+}
+.th-sb .slide-quote {
+  background: var(--sb-surf);
+  border-left-color: var(--coral);
+  color: var(--text-sb-md);
+  box-shadow:
+    6px  6px 18px 0px rgba(100,140,175, 0.38),
+   -4px -4px 12px 0px rgba(255,255,255, 0.82);
+}
+.th-sb code {
+  background: var(--sb-hi);
+  padding: 2px 6px; border-radius: 6px;
+  box-shadow: inset 3px 3px 7px rgba(100,140,175,0.3), inset -2px -2px 5px rgba(255,255,255,0.7);
+}
+
+/* ── Coral accent theme ── */
+.th-coral {
+  background: linear-gradient(145deg, #f5ddd6 0%, #f0d0c6 100%);
+  color: #3a1a10;
+}
+.th-coral .divider { background: var(--coral-dk); }
+.th-coral .slide-topic-label { color: var(--coral-dk); }
+.th-coral .slide-col,
+.th-coral .highlight-box,
+.th-coral .slide-img,
+.th-coral .slide-quote {
+  background: #fae8e2;
+  box-shadow:
+    8px  8px 20px 0px rgba(180,110,90, 0.40),
+   -5px -5px 13px 0px rgba(255,255,255, 0.82);
+}
+.th-coral .slide-quote { border-left-color: var(--coral); color: #6a3020; }
+
+/* ── Navy dark — for dark slides ── */
+.th-navy {
+  background: var(--navy);
+  color: var(--text-nv);
+}
+.th-navy .divider { background: var(--sb-mid); }
+.th-navy .slide-topic-label { color: var(--sb-mid); }
+.th-navy .slide-col,
+.th-navy .highlight-box,
+.th-navy .slide-img {
+  background: var(--navy-surf);
+  box-shadow:
+    7px  7px 20px 0px rgba(10,16,24, 0.70),
+   -4px -4px 12px 0px rgba(40,60,80, 0.55),
+    0    1px  2px 0px rgba(0,0,0,0.2);
+}
+.th-navy .slide-quote {
+  background: var(--navy-surf);
+  border-left-color: var(--coral);
+  color: var(--text-nv-m);
+  box-shadow:
+    6px  6px 16px 0px rgba(10,16,24, 0.65),
+   -3px -3px 10px 0px rgba(40,60,80, 0.50);
+}
+.th-navy code {
+  background: var(--navy-hi);
+  padding: 2px 6px; border-radius: 6px;
+  box-shadow: inset 3px 3px 7px rgba(8,12,20,0.6), inset -2px -2px 5px rgba(40,60,80,0.5);
+}
+
+/* ── Sky light — alternate light ── */
+.th-sky {
+  background: linear-gradient(145deg, #cce8f4 0%, #d8f0f8 100%);
+  color: #1a2e42;
+}
+.th-sky .divider { background: var(--sb-deep); }
+.th-sky .slide-topic-label { color: var(--sb-deep); }
+.th-sky .slide-col,
+.th-sky .highlight-box,
+.th-sky .slide-img,
+.th-sky .slide-quote {
+  background: #ddf2fa;
+  box-shadow:
+    7px  7px 18px 0px rgba(80,140,180, 0.38),
+   -5px -5px 13px 0px rgba(255,255,255, 0.84);
+}
+.th-sky .slide-quote { border-left-color: var(--sb-deep); color: #2a4a6a; }
+
+/* ═══════════════════════════════════════════════════════
+   SPACE-AWARE TYPOGRAPHY (auto-fit)
+   — Binary-searches --fs-scale so slide-body fits
+   — Caps: max 1.15 (prevent oversized on sparse slides),
+     min 0.72 (readability floor)
+   — Runs after layout settles (rAF x2)
+═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════
+   UI BUTTONS — SOFT 3D
+═══════════════════════════════════════════════════════ */
+#ui-layer { position:fixed; inset:0; pointer-events:none; z-index:100; }
+
+.ui-btn {
+  pointer-events:all; cursor:pointer;
+  border:none; outline:none;
+  border-radius:14px;
+  width:var(--usz); height:var(--usz);
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  transition: box-shadow .15s, transform .12s;
+  /* Dark mode default */
+  background: #1a2432;
+  color: #a0c8c4;
+  box-shadow:
+    4px  4px 10px rgba(4,8,14,0.70),
+   -2px -2px  6px rgba(36,52,64,0.40),
+    inset 0 1px 1px rgba(60,80,100,0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.ui-btn:hover {
+  transform:translateY(-1.5px);
+  box-shadow:
+    6px  6px 14px rgba(4,8,14,0.75),
+   -3px -3px  8px rgba(36,52,64,0.45),
+    inset 0 1px 2px rgba(60,80,100,0.18);
+}
+.ui-btn:active {
+  transform:translateY(1px);
+  box-shadow:
+    inset 3px  3px 8px rgba(4,8,14,0.65),
+    inset -2px -2px 5px rgba(36,52,64,0.35);
+}
+
+/* Light variant */
+.ui-btn.lm {
+  background: var(--nude-surf);
+  color: var(--text-dk);
+  box-shadow:
+    5px  5px 12px rgba(165,148,136,0.52),
+   -3px -3px  8px rgba(255,255,255, 0.85),
+    inset 0 1px 1px rgba(255,255,255,0.5);
+}
+.ui-btn.lm:hover {
+  transform:translateY(-1.5px);
+  box-shadow:
+    7px  7px 16px rgba(165,148,136,0.56),
+   -4px -4px 10px rgba(255,255,255, 0.88);
+}
+.ui-btn.lm:active {
+  transform:translateY(1px);
+  box-shadow:
+    inset 3px  3px 8px rgba(165,148,136,0.50),
+    inset -2px -2px 6px rgba(255,255,255,0.78);
+}
+
+.ui-btn[data-disabled="true"] { opacity:0.18; pointer-events:none; }
+
+.icon-svg {
+  width:44%; height:44%;
+  fill:none; stroke:currentColor;
+  stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+  pointer-events:none; flex-shrink:0;
+}
+
+.btn-label {
+  font-size:calc(var(--usz) * 0.29);
+  font-weight:700; font-family:var(--fb);
+  pointer-events:none; line-height:1;
+}
+
+/* Positions */
+#nav-up    { position:absolute; right:10px; top:50%; transform:translateY(calc(-50% - var(--usz)*0.62)); }
+#nav-down  { position:absolute; right:10px; top:50%; transform:translateY(calc(-50% + var(--usz)*0.62)); }
+#nav-left  { position:absolute; bottom:58px; left:50%; transform:translateX(calc(-50% - var(--usz)*0.62)); }
+#nav-right { position:absolute; bottom:58px; left:50%; transform:translateX(calc(-50% + var(--usz)*0.62)); }
+
+/* Cluster tombol kontrol — kiri bawah */
+#ctrl-cluster {
+  position:absolute; bottom:14px; left:10px;
+  display:flex; gap:6px; pointer-events:all;
+}
+
+/* Indikator posisi slide — kanan bawah */
+#slide-indicator {
+  position:absolute; bottom:14px; right:10px;
+  font-size:clamp(0.54rem,1.2vw,0.68rem);
+  font-weight:500; letter-spacing:0.06em;
+  padding:4px 11px; border-radius:20px;
+  pointer-events:none;
+  background:rgba(18,28,40,0.72); color:rgba(160,200,196,0.85);
+  backdrop-filter:blur(10px);
+  box-shadow:3px 3px 8px rgba(4,8,14,0.5),-1px -1px 4px rgba(36,52,64,0.25);
+  transition: background .3s, color .3s, box-shadow .3s;
+}
+#slide-indicator.lm {
+  background:rgba(237,229,220,0.82); color:rgba(58,44,36,0.8);
+  box-shadow:3px 3px 8px rgba(165,148,136,0.45),-2px -2px 5px rgba(255,255,255,0.75);
+}
+
+/* Zoom indicator — kanan atas */
+#zoom-indicator {
+  position:absolute; top:10px; right:10px;
+  font-size:0.62rem; font-weight:600; letter-spacing:0.05em;
+  padding:4px 10px; border-radius:20px;
+  pointer-events:none; opacity:0;
+  background:rgba(18,28,40,0.72); color:rgba(160,200,196,0.9);
+  backdrop-filter:blur(8px);
+  transition: opacity .3s;
+}
+#zoom-indicator.visible { opacity:1; }
+
+@media (max-width:480px) {
+  #nav-up,#nav-down { right:6px; }
+  #nav-left,#nav-right { bottom:44px; }
+  #ctrl-cluster { bottom:8px; left:6px; gap:5px; }
+  #slide-indicator { bottom:8px; right:6px; }
+}
+</style>
+</head>
+<body>
+
+<div id="deck">
+<div id="zoom-wrap">
+
+  <!-- ══ TOPIK 0 — Cover + Outline ══ -->
+  <div class="topic-col" data-topic="0">
+
+    <div class="slide th-sb-cover">
+      <div class="slide-inner" style="padding:0; position:relative; overflow:hidden; justify-content:flex-start;">
+
+        <!-- ── LINE ART BACKGROUND ── -->
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 400 710" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <!-- Grid perspective lines — vanishing point top-right -->
+          <g opacity="0.10" stroke="#98c1d9" stroke-width="0.8" fill="none">
+            <line x1="400" y1="0"   x2="-60"  y2="710"/>
+            <line x1="400" y1="0"   x2="20"   y2="710"/>
+            <line x1="400" y1="0"   x2="100"  y2="710"/>
+            <line x1="400" y1="0"   x2="180"  y2="710"/>
+            <line x1="400" y1="0"   x2="260"  y2="710"/>
+            <line x1="400" y1="0"   x2="340"  y2="710"/>
+          </g>
+          <!-- Horizontal cross lines -->
+          <g opacity="0.07" stroke="#98c1d9" stroke-width="0.7" fill="none">
+            <line x1="0" y1="140" x2="400" y2="140"/>
+            <line x1="0" y1="280" x2="400" y2="280"/>
+            <line x1="0" y1="420" x2="400" y2="420"/>
+            <line x1="0" y1="560" x2="400" y2="560"/>
+          </g>
+          <!-- Large decorative circle — bottom left -->
+          <circle cx="-40" cy="680" r="260" stroke="#3d5a80" stroke-width="1.2" fill="none" opacity="0.18"/>
+          <circle cx="-40" cy="680" r="200" stroke="#3d5a80" stroke-width="0.7" fill="none" opacity="0.12"/>
+          <!-- Small accent circles — top right -->
+          <circle cx="360" cy="60" r="80"  stroke="#ee6c4d" stroke-width="1.0" fill="none" opacity="0.22"/>
+          <circle cx="360" cy="60" r="50"  stroke="#ee6c4d" stroke-width="0.6" fill="none" opacity="0.16"/>
+          <circle cx="360" cy="60" r="20"  stroke="#ee6c4d" stroke-width="0.5" fill="none" opacity="0.20"/>
+          <!-- Diagonal accent bar -->
+          <line x1="0" y1="480" x2="160" y2="710" stroke="#ee6c4d" stroke-width="1.5" opacity="0.28"/>
+          <line x1="20" y1="480" x2="180" y2="710" stroke="#ee6c4d" stroke-width="0.6" opacity="0.15"/>
+          <!-- Top accent horizontal bar -->
+          <rect x="0" y="0" width="400" height="3" fill="#ee6c4d" opacity="0.55"/>
+          <!-- Dot grid — mid area -->
+          <g opacity="0.12" fill="#98c1d9">
+            <circle cx="30"  cy="320" r="1.5"/>  <circle cx="70"  cy="320" r="1.5"/>
+            <circle cx="110" cy="320" r="1.5"/>  <circle cx="150" cy="320" r="1.5"/>
+            <circle cx="190" cy="320" r="1.5"/>  <circle cx="230" cy="320" r="1.5"/>
+            <circle cx="30"  cy="360" r="1.5"/>  <circle cx="70"  cy="360" r="1.5"/>
+            <circle cx="110" cy="360" r="1.5"/>  <circle cx="150" cy="360" r="1.5"/>
+            <circle cx="190" cy="360" r="1.5"/>  <circle cx="230" cy="360" r="1.5"/>
+            <circle cx="30"  cy="400" r="1.5"/>  <circle cx="70"  cy="400" r="1.5"/>
+            <circle cx="110" cy="400" r="1.5"/>  <circle cx="150" cy="400" r="1.5"/>
+            <circle cx="190" cy="400" r="1.5"/>  <circle cx="230" cy="400" r="1.5"/>
+          </g>
+        </svg>
+
+        <!-- ── CONTENT LAYER ── -->
+        <div style="position:relative; z-index:2; display:flex; flex-direction:column; height:100%; padding: clamp(1.4rem,5vw,3rem) clamp(1.4rem,5vw,3rem);">
+
+          <!-- Kop atas -->
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom: auto;">
+            <div style="width:28px; height:2px; background:#ee6c4d; border-radius:2px;"></div>
+            <span style="font-size:clamp(0.52rem,1.4vw,0.65rem); font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#98c1d9; font-family:'DM Sans',sans-serif;">Metodologi Penelitian · FKG UNISSULA</span>
+          </div>
+
+          <!-- Main title block — vertikal tengah -->
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding: 2rem 0 1.5rem;">
+            <div style="font-size:clamp(0.6rem,1.6vw,0.72rem); font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:#ee6c4d; font-family:'DM Sans',sans-serif; margin-bottom:1rem;">Materi Kuliah</div>
+            <div style="font-family:'DM Serif Display',Georgia,serif; font-size:clamp(2rem,8vw,4.2rem); line-height:1.05; color:#e8f4fc; letter-spacing:-0.01em;">Jenis &amp;<br>Rancangan<br>Penelitian</div>
+            <div style="width:48px; height:3px; background:#ee6c4d; border-radius:3px; margin: 1.2rem 0;"></div>
+            <div style="font-size:clamp(0.78rem,2.2vw,1rem); color:#98c1d9; font-family:'DM Sans',sans-serif; font-weight:300; letter-spacing:0.04em;">Dalam Ilmu Kedokteran Gigi</div>
+          </div>
+
+          <!-- Footer identitas -->
+          <div style="border-top:1px solid rgba(152,193,217,0.18); padding-top:1rem; display:flex; flex-direction:column; gap:0.25rem;">
+            <span style="font-size:clamp(0.7rem,1.8vw,0.85rem); font-weight:600; color:#e8f4fc; font-family:'DM Sans',sans-serif;">drg. Muhammad Dian Firdausy, M.Sc(DMS)</span>
+            <span style="font-size:clamp(0.6rem,1.5vw,0.72rem); color:#98c1d9; font-family:'DM Sans',sans-serif; opacity:0.75;">Departemen Material Kedokteran Gigi</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Pendahuluan</div>
+          <div class="slide-title">Garis Besar Materi</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li><strong>Topik 1</strong> — Kerangka 4 Dimensi Klasifikasi Penelitian</li>
+            <li><strong>Topik 2</strong> — Penelitian Deskriptif dan Analitik</li>
+            <li><strong>Topik 3</strong> — Penelitian Observasional dan Eksperimental</li>
+            <li><strong>Topik 4</strong> — Dimensi Waktu: Cross-Sectional, Kohort, Case-Control</li>
+            <li><strong>Topik 5</strong> — RCT dan Quasi-Eksperimental</li>
+            <li><strong>Topik 6</strong> — Penelitian Kuantitatif dan Kualitatif</li>
+            <li><strong>Topik 7</strong> — Penelitian In Vitro</li>
+            <li><strong>Topik 8</strong> — Penelitian In Vivo</li>
+            <li><strong>Topik 9</strong> — Penelitian In Silico</li>
+            <li><strong>Topik 10</strong> — Penelitian Komparatif vs Korelatif</li>
+            <li><strong>Topik 11</strong> — Satu Masalah, Banyak Pendekatan</li>
+            <li><strong>Topik 12</strong> — Memilih Rancangan yang Tepat</li>
+          </ul>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Outline</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 1 — Kerangka 4 Dimensi ══ -->
+  <div class="topic-col" data-topic="1">
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 1</div>
+          <div class="slide-title">Kerangka 4 Dimensi</div>
+          <div class="slide-subtitle">Memahami Penelitian Secara Utuh</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>Kebingungan mahasiswa dalam merancang penelitian sering muncul karena menganggap jenis-jenis penelitian saling bertentangan. Kenyataannya, setiap penelitian dapat dideskripsikan dari <strong>empat dimensi secara bersamaan</strong> — masing-masing menjawab pertanyaan yang berbeda.</p>
+          <div class="slide-img">
+            <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <filter id="sh1"><feDropShadow dx="2" dy="3" stdDeviation="4" flood-color="#0a1422" flood-opacity="0.5"/></filter>
+              </defs>
+              <!-- Central circle -->
+              <circle cx="240" cy="110" r="38" fill="#3d5a80" filter="url(#sh1)"/>
+              <text x="240" y="104" text-anchor="middle" fill="#e0fbfc" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">SATU</text>
+              <text x="240" y="116" text-anchor="middle" fill="#e0fbfc" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">PENELITIAN</text>
+              <text x="240" y="128" text-anchor="middle" fill="#98c1d9" font-size="7.5" font-family="DM Sans,sans-serif">4 label</text>
+              <!-- Dimension boxes -->
+              <!-- Top: Tujuan -->
+              <rect x="170" y="10" width="140" height="44" rx="10" fill="#ee6c4d" filter="url(#sh1)"/>
+              <text x="240" y="29" text-anchor="middle" fill="white" font-size="9" font-family="DM Sans,sans-serif" font-weight="700">DIMENSI 1 · TUJUAN</text>
+              <text x="240" y="44" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8" font-family="DM Sans,sans-serif">Deskriptif vs Analitik</text>
+              <line x1="240" y1="54" x2="240" y2="72" stroke="#ee6c4d" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+              <!-- Bottom: Waktu -->
+              <rect x="170" y="166" width="140" height="44" rx="10" fill="#ee6c4d" filter="url(#sh1)"/>
+              <text x="240" y="185" text-anchor="middle" fill="white" font-size="9" font-family="DM Sans,sans-serif" font-weight="700">DIMENSI 4 · WAKTU</text>
+              <text x="240" y="200" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8" font-family="DM Sans,sans-serif">Cross-sec · Kohort · CC</text>
+              <line x1="240" y1="148" x2="240" y2="166" stroke="#ee6c4d" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+              <!-- Left: Intervensi -->
+              <rect x="10" y="88" width="132" height="44" rx="10" fill="#293241" stroke="#98c1d9" stroke-width="1.5" filter="url(#sh1)"/>
+              <text x="76" y="107" text-anchor="middle" fill="#e0fbfc" font-size="9" font-family="DM Sans,sans-serif" font-weight="700">DIMENSI 2 · INTERVENSI</text>
+              <text x="76" y="121" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif">Observasional vs Eksperimental</text>
+              <line x1="142" y1="110" x2="202" y2="110" stroke="#98c1d9" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+              <!-- Right: Data -->
+              <rect x="338" y="88" width="132" height="44" rx="10" fill="#293241" stroke="#98c1d9" stroke-width="1.5" filter="url(#sh1)"/>
+              <text x="404" y="107" text-anchor="middle" fill="#e0fbfc" font-size="9" font-family="DM Sans,sans-serif" font-weight="700">DIMENSI 3 · DATA</text>
+              <text x="404" y="121" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif">Kuantitatif vs Kualitatif</text>
+              <line x1="278" y1="110" x2="338" y2="110" stroke="#98c1d9" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+            </svg>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Kerangka · Konsep</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 1 · Sub 2</div>
+          <div class="slide-title">Empat Pertanyaan Kunci</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Dimensi 1 &amp; 2</h3>
+              <ul>
+                <li><strong>Untuk apa?</strong> — Deskriptif atau Analitik</li>
+                <li><strong>Apakah ada intervensi?</strong> — Observasional atau Eksperimental</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Dimensi 3 &amp; 4</h3>
+              <ul>
+                <li><strong>Data seperti apa?</strong> — Kuantitatif atau Kualitatif</li>
+                <li><strong>Bagaimana dimensi waktunya?</strong> — Cross-sectional, Kohort, atau Case-Control</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Contoh: penelitian tentang hubungan konsumsi gula dengan DMFT pada siswa SMP secara bersamaan bersifat <strong>analitik, observasional, kuantitatif, dan cross-sectional</strong>. Keempat label ini saling melengkapi, tidak saling menggantikan.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Kerangka · 4 Pertanyaan</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 1 · Sub 3</div>
+          <div class="slide-title">Rancangan Ditentukan oleh Rumusan Masalah</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>Keempat dimensi tidak dapat dipilih secara sembarangan — rancangan penelitian merupakan konsekuensi logis dari <strong>rumusan masalah dan pertanyaan penelitian</strong> yang sudah ditetapkan.</p>
+          <div class="slide-quote">
+            "Penentuan rumusan permasalahan dan pertanyaan penelitian merupakan hal krusial sebelum memulai suatu penelitian."
+          </div>
+          <div class="highlight-box">
+            <p>Implikasi praktis: jangan memilih metode terlebih dahulu, lalu mencari masalah yang cocok. Urutan yang benar adalah: <strong>masalah → pertanyaan → rancangan → metode</strong>.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Kerangka · Implikasi</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 2 — Deskriptif vs Analitik ══ -->
+  <div class="topic-col" data-topic="2">
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 2</div>
+          <div class="slide-title">Penelitian Deskriptif</div>
+          <div class="slide-subtitle">Menggambarkan Realitas Secara Sistematis</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li>Menjawab pertanyaan: <strong>apa?</strong> dan <strong>berapa?</strong></li>
+            <li>Tujuan: menggambarkan distribusi fenomena di populasi</li>
+            <li>Menggunakan statistik deskriptif (frekuensi, rerata, SD) — <em>tidak ada uji hipotesis</em></li>
+            <li>Desain khas: survei prevalensi, studi kasus, laporan kasus (case report), studi ekologi</li>
+          </ul>
+          <div class="slide-quote">
+            "Sebelum mempertanyakan hubungan sebab-akibat, kita perlu memahami gambaran dasar fenomena yang ingin diteliti."
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Deskriptif vs Analitik · Deskriptif</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 2 · Sub 2</div>
+          <div class="slide-title">Penelitian Analitik</div>
+          <div class="slide-subtitle">Menguji Hipotesis dan Mencari Hubungan</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li>Menjawab: <strong>apakah ada hubungan?</strong> dan <strong>seberapa besar risikonya?</strong></li>
+            <li>Merumuskan hipotesis nol (H₀) yang diuji secara statistik</li>
+            <li>Menghasilkan ukuran asosiasi: RR, OR, HR, beda rerata</li>
+            <li>Wajib disertai interval kepercayaan 95% (CI 95%)</li>
+            <li>Perhitungan besar sampel <em>sebelum</em> penelitian dimulai</li>
+          </ul>
+          <div class="highlight-box">
+            <p>Penelitian analitik observasional tidak dapat membuktikan kausalitas secara definitif. Kausalitas dievaluasi menggunakan <strong>Kriteria Bradford Hill</strong>.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Deskriptif vs Analitik · Analitik</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 2 · Sub 3</div>
+          <div class="slide-title">Contoh Rumusan Masalah</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Deskriptif</h3>
+              <p>"Berapa rerata indeks DMFT dan bagaimana distribusi komponen D, M, dan F pada siswa SMP Negeri di Kota Semarang tahun 2025?"</p>
+            </div>
+            <div class="slide-col">
+              <h3>Analitik</h3>
+              <p>"Apakah terdapat hubungan bermakna antara frekuensi konsumsi minuman berpemanis (≥3×/hari) dengan indeks DMFT pada remaja SMP usia 13–15 tahun di Kota Semarang?"</p>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Perhatikan perbedaannya: deskriptif hanya memerlukan statistik deskriptif, sedangkan analitik memerlukan uji chi-square / regresi logistik, OR dengan CI 95%, dan perhitungan besar sampel berbasis kekuatan statistik minimal 80%.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Deskriptif vs Analitik · Contoh RM</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 3 — Observasional vs Eksperimental ══ -->
+  <div class="topic-col" data-topic="3">
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 3</div>
+          <div class="slide-title">Observasional vs Eksperimental</div>
+          <div class="slide-subtitle">Perbedaan Paling Fundamental dalam Metodologi Biomedis</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Observasional</h3>
+              <ul>
+                <li>Peneliti = <strong>pengamat murni</strong></li>
+                <li>Paparan terjadi secara alami</li>
+                <li>Feasibel untuk pertanyaan etis-sensitif</li>
+                <li>Validitas eksternal lebih baik</li>
+                <li>Ancaman utama: <em>confounding</em></li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Eksperimental</h3>
+              <ul>
+                <li>Peneliti <strong>memanipulasi paparan</strong></li>
+                <li>Alokasi perlakuan dikontrol</li>
+                <li>Randomisasi eliminasi confounding</li>
+                <li>Bukti kausalitas lebih kuat</li>
+                <li>Keterbatasan etika dan biaya</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Semua penelitian eksperimental bersifat analitik. Namun tidak semua penelitian analitik bersifat eksperimental — kohort, case-control, dan cross-sectional analitik tetap bersifat observasional.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Observasional vs Eksperimental</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 3 · Sub 2</div>
+          <div class="slide-title">Menangani Confounding</div>
+          <div class="slide-subtitle">Tantangan Utama Penelitian Observasional</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>Confounding terjadi ketika variabel ketiga berhubungan dengan paparan <em>sekaligus</em> dengan outcome, sehingga hubungan yang terlihat mungkin sebagian disebabkan oleh variabel ketiga tersebut.</p>
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Strategi Observasional</h3>
+              <ul>
+                <li>Matching</li>
+                <li>Restriksi</li>
+                <li>Stratifikasi</li>
+                <li>Analisis multivariat</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Solusi Eksperimental</h3>
+              <ul>
+                <li>Randomisasi — mengeliminasi semua confounding (diketahui maupun tidak)</li>
+                <li>Blinding — meminimalkan bias ekspektasi</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Observasional vs Eksperimental · Confounding</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 3 · Sub 3</div>
+          <div class="slide-title">Contoh Rumusan Masalah</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Observasional</h3>
+              <p>"Apakah terdapat hubungan antara kebiasaan menyikat gigi ≤1×/hari dengan indeks DMFT pada siswa SD kelas V di Kota Semarang?"</p>
+              <p style="font-size:0.8em; opacity:0.7; margin-top:0.4em;">→ Peneliti hanya mencatat kebiasaan yang sudah ada; tidak ada intervensi.</p>
+            </div>
+            <div class="slide-col">
+              <h3>Eksperimental (RCT)</h3>
+              <p>"Apakah program sikat gigi bersama tiga kali seminggu selama 3 bulan lebih efektif menurunkan indeks plak dibandingkan edukasi konvensional pada siswa SD kelas V?"</p>
+              <p style="font-size:0.8em; opacity:0.7; margin-top:0.4em;">→ Peneliti memberikan intervensi; subjek diacak ke kelompok perlakuan/kontrol.</p>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Permasalahan dasar yang sama dapat dijawab dengan dua pendekatan berbeda. Observasional menjawab "apakah ada hubungan?"; eksperimental menjawab "apakah intervensi ini efektif?"</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Observasional vs Eksperimental · Contoh RM</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 4 — Dimensi Waktu ══ -->
+  <div class="topic-col" data-topic="4">
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 4</div>
+          <div class="slide-title">Dimensi Waktu</div>
+          <div class="slide-subtitle">Cross-Sectional · Kohort · Case-Control</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-img">
+            <svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#3d5a80"/>
+                </marker>
+                <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#ee6c4d"/>
+                </marker>
+                <marker id="arr3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#98c1d9"/>
+                </marker>
+              </defs>
+
+              <!-- Timeline axis -->
+              <line x1="50" y1="110" x2="450" y2="110" stroke="#3d5a80" stroke-width="1.5" opacity="0.25"/>
+              <text x="50"  y="106" text-anchor="middle" fill="#3d5a80" font-size="8" font-family="DM Sans,sans-serif" opacity="0.6">MASA LALU</text>
+              <text x="450" y="106" text-anchor="middle" fill="#3d5a80" font-size="8" font-family="DM Sans,sans-serif" opacity="0.6">MASA DEPAN</text>
+
+              <!-- ── KOHORT (row above axis, forward) ── -->
+              <!-- Start dot -->
+              <circle cx="130" cy="110" r="7" fill="#ee6c4d"/>
+              <!-- Forward arrow -->
+              <line x1="137" y1="110" x2="353" y2="110" stroke="#ee6c4d" stroke-width="3" marker-end="url(#arr2)"/>
+              <!-- Labels -->
+              <text x="130" y="85" text-anchor="middle" fill="#ee6c4d" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">KOHORT</text>
+              <rect x="78" y="88" width="66" height="18" rx="4" fill="#ee6c4d" opacity="0.15"/>
+              <text x="111" y="101" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Mulai: Paparan</text>
+              <rect x="310" y="88" width="66" height="18" rx="4" fill="#ee6c4d" opacity="0.15"/>
+              <text x="343" y="101" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Tunggu: Outcome</text>
+
+              <!-- ── CROSS-SECTIONAL (vertical line at center) ── -->
+              <line x1="250" y1="78" x2="250" y2="142" stroke="#3d5a80" stroke-width="2.5"/>
+              <circle cx="250" cy="110" r="6" fill="#3d5a80"/>
+              <text x="250" y="72" text-anchor="middle" fill="#3d5a80" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">CROSS-SECTIONAL</text>
+              <text x="250" y="155" text-anchor="middle" fill="#3d5a80" font-size="8" font-family="DM Sans,sans-serif">Paparan &amp; Outcome: satu waktu</text>
+
+              <!-- ── CASE-CONTROL (two separate dots + investigator arrow) ── -->
+              <!-- Outcome dot (present/right side) -->
+              <circle cx="370" cy="110" r="7" fill="#98c1d9"/>
+              <text x="370" y="178" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Outcome</text>
+              <text x="370" y="189" text-anchor="middle" fill="#98c1d9" font-size="7.5" font-family="DM Sans,sans-serif" opacity="0.8">(sudah terjadi)</text>
+
+              <!-- Paparan dot (past/left) -->
+              <circle cx="170" cy="110" r="7" fill="#98c1d9" opacity="0.45" stroke="#98c1d9" stroke-width="1.5"/>
+              <text x="170" y="178" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Paparan?</text>
+              <text x="170" y="189" text-anchor="middle" fill="#98c1d9" font-size="7.5" font-family="DM Sans,sans-serif" opacity="0.8">(ditelusuri)</text>
+
+              <!-- Investigator arrow: RIGHT to LEFT (peneliti bergerak mundur) -->
+              <line x1="362" y1="120" x2="182" y2="135" stroke="#98c1d9" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr3)"/>
+              <text x="272" y="148" text-anchor="middle" fill="#98c1d9" font-size="7.5" font-family="DM Sans,sans-serif">peneliti menelusuri ke belakang</text>
+
+              <!-- CASE-CONTROL label -->
+              <text x="370" y="85" text-anchor="middle" fill="#98c1d9" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">CASE-CONTROL</text>
+
+              <!-- Legend note -->
+              <rect x="8" y="195" width="484" height="18" rx="4" fill="#1e2a3a" opacity="0.4"/>
+              <text x="250" y="207" text-anchor="middle" fill="#98c1d9" font-size="7.5" font-family="DM Sans,sans-serif">Titik mulai peneliti (●) → arah penelusuran (--→). Bukan arah kausalitas.</text>
+            </svg>
+          </div>
+          <p>Dimensi waktu menentukan kekuatan kesimpulan tentang <strong>temporalitas</strong> — apakah paparan memang mendahului outcome.</p>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Dimensi Waktu · Gambaran Umum</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 4 · Sub 2</div>
+          <div class="slide-title">Cross-Sectional</div>
+          <div class="slide-subtitle">Potret dalam Satu Momen</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Kelebihan</h3>
+              <ul>
+                <li>Efisien: satu kali pengambilan data</li>
+                <li>Relatif murah dan cepat</li>
+                <li>Bisa meneliti banyak variabel sekaligus</li>
+                <li>Cocok untuk skripsi dan tesis</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Keterbatasan</h3>
+              <ul>
+                <li><strong>Tidak dapat menentukan temporalitas</strong> — mana yang lebih dulu: paparan atau outcome?</li>
+                <li><em>Reverse causality</em></li>
+                <li><em>Prevalence-incidence bias</em> (Neyman bias)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="slide-quote">
+            "Cross-sectional sebaiknya tidak digunakan untuk menguji hipotesis kausalitas yang kuat, melainkan untuk eksplorasi awal asosiasi."
+          </div>
+          <div class="highlight-box">
+            <p><strong>Contoh RM:</strong> "Apakah terdapat hubungan antara frekuensi konsumsi minuman berpemanis, kebiasaan menyikat gigi, dan frekuensi kunjungan ke dokter gigi dengan indeks DMFT pada siswa SMP kelas VIII di Kota Semarang?" — Data dikumpulkan satu kali; analisis chi-square dan regresi logistik.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Dimensi Waktu · Cross-Sectional</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sky">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 4 · Sub 3</div>
+          <div class="slide-title">Penelitian Kohort</div>
+          <div class="slide-subtitle">Mengikuti Perjalanan Waktu ke Depan</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Keunggulan</h3>
+              <ul>
+                <li>Temporalitas terjamin: paparan diukur <em>sebelum</em> outcome</li>
+                <li>Dapat menghitung insidensi dan <strong>Relative Risk (RR)</strong></li>
+                <li>Bukti lebih kuat untuk argumen kausalitas</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Keterbatasan</h3>
+              <ul>
+                <li>Waktu lama dan biaya besar</li>
+                <li><em>Loss to follow-up</em> menimbulkan bias</li>
+                <li>Paparan bisa berubah selama follow-up</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Contoh RM: "Apakah siswa SMP yang mengonsumsi minuman berpemanis ≥3×/hari mengalami peningkatan <em>DMFT increment</em> lebih besar dibandingkan siswa yang mengonsumsi kurang dari 1×/hari setelah follow-up 24 bulan?"</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Dimensi Waktu · Kohort</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sky">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 4 · Sub 4</div>
+          <div class="slide-title">Penelitian Case-Control</div>
+          <div class="slide-subtitle">Menelusuri Jejak ke Masa Lalu</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Kelebihan</h3>
+              <ul>
+                <li>Efisien untuk penyakit langka</li>
+                <li>Dapat meneliti banyak faktor risiko sekaligus</li>
+                <li>Lebih cepat dan murah dari kohort</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Keterbatasan</h3>
+              <ul>
+                <li><strong>Recall bias</strong> — kasus lebih aktif mengingat paparan</li>
+                <li>Pemilihan kontrol kritis — potensi <em>selection bias</em></li>
+                <li>Ukuran asosiasi: <strong>Odds Ratio (OR)</strong></li>
+              </ul>
+            </div>
+          </div>
+          <div class="slide-quote">
+            "OR merupakan proksi RR yang valid hanya pada penyakit langka. Pada penyakit sering, OR dapat melebih-lebihkan besarnya risiko."
+          </div>
+          <div class="highlight-box">
+            <p><strong>Contoh RM:</strong> "Apakah kebiasaan menyikat gigi ≤1×/hari merupakan faktor risiko terhadap DMFT ≥5 pada remaja SMA usia 15–17 tahun? (OR=? CI 95%)" — Kasus: remaja dengan DMFT ≥5 dari klinik gigi. Kontrol: remaja dengan DMFT &lt;2 dari sekolah yang sama. Riwayat paparan ditanyakan melalui kuesioner retrospektif.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Dimensi Waktu · Case-Control</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 5 — RCT & Quasi ══ -->
+  <div class="topic-col" data-topic="5">
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 5</div>
+          <div class="slide-title">Randomized Controlled Trial</div>
+          <div class="slide-subtitle">Standar Emas Penelitian Eksperimental Klinis</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-img">
+            <svg viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <marker id="arrw" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                  <polygon points="0 0, 7 2.5, 0 5" fill="#98c1d9"/>
+                </marker>
+              </defs>
+              <!-- Boxes -->
+              <rect x="10" y="65" width="90" height="50" rx="8" fill="#293241" stroke="#98c1d9" stroke-width="1.5"/>
+              <text x="55" y="88" text-anchor="middle" fill="#e0fbfc" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">POPULASI</text>
+              <text x="55" y="103" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif">Eligible</text>
+
+              <rect x="160" y="65" width="90" height="50" rx="8" fill="#3d5a80"/>
+              <text x="205" y="88" text-anchor="middle" fill="white" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">RANDOMISASI</text>
+              <text x="205" y="102" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="8" font-family="DM Sans,sans-serif">Acak murni</text>
+
+              <rect x="310" y="20" width="90" height="46" rx="8" fill="#ee6c4d"/>
+              <text x="355" y="41" text-anchor="middle" fill="white" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">INTERVENSI</text>
+              <text x="355" y="56" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8" font-family="DM Sans,sans-serif">Perlakuan aktif</text>
+
+              <rect x="310" y="114" width="90" height="46" rx="8" fill="#293241" stroke="#98c1d9" stroke-width="1.5"/>
+              <text x="355" y="135" text-anchor="middle" fill="#e0fbfc" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">KONTROL</text>
+              <text x="355" y="150" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif">Plasebo / standar</text>
+
+              <!-- Arrows -->
+              <line x1="100" y1="90" x2="158" y2="90" stroke="#98c1d9" stroke-width="2" marker-end="url(#arrw)"/>
+              <line x1="250" y1="82" x2="308" y2="44" stroke="#98c1d9" stroke-width="2" marker-end="url(#arrw)"/>
+              <line x1="250" y1="98" x2="308" y2="136" stroke="#98c1d9" stroke-width="2" marker-end="url(#arrw)"/>
+
+              <!-- Outcome boxes -->
+              <rect x="420" y="20" width="52" height="46" rx="6" fill="#1e2a3a" stroke="#ee6c4d" stroke-width="1.5"/>
+              <text x="446" y="41" text-anchor="middle" fill="#e0fbfc" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Outcome</text>
+              <text x="446" y="55" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif">diukur</text>
+              <line x1="400" y1="43" x2="418" y2="43" stroke="#ee6c4d" stroke-width="1.5" marker-end="url(#arrw)"/>
+
+              <rect x="420" y="114" width="52" height="46" rx="6" fill="#1e2a3a" stroke="#98c1d9" stroke-width="1.5"/>
+              <text x="446" y="135" text-anchor="middle" fill="#e0fbfc" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Outcome</text>
+              <text x="446" y="149" text-anchor="middle" fill="#98c1d9" font-size="8" font-family="DM Sans,sans-serif">diukur</text>
+              <line x1="400" y1="137" x2="418" y2="137" stroke="#98c1d9" stroke-width="1.5" marker-end="url(#arrw)"/>
+
+              <!-- Label -->
+              <text x="446" y="97" text-anchor="middle" fill="#ee6c4d" font-size="9" font-family="DM Sans,sans-serif" font-weight="700">BANDING</text>
+            </svg>
+          </div>
+          <ul>
+            <li>Randomisasi: eliminasi semua confounding (diketahui maupun tidak)</li>
+            <li>Blinding: single-, double-, triple-blind untuk minimalisasi bias ekspektasi</li>
+          </ul>
+          <div class="highlight-box">
+            <p><strong>Contoh RM:</strong> "Apakah obat kumur ekstrak daun sirih 25% lebih efektif menurunkan indeks plak dibandingkan klorheksidin 0,2% pada pasien periodontitis kronis setelah 4 minggu pemakaian?" — Double-blind RCT; randomisasi berbasis individu; analisis uji-t berpasangan.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">RCT &amp; Quasi · RCT</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 5 · Sub 2</div>
+          <div class="slide-title">Quasi-Eksperimental</div>
+          <div class="slide-subtitle">Eksperimen Tanpa Randomisasi Penuh</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>Dalam banyak situasi lapangan, randomisasi penuh tidak praktis. Quasi-eksperimental memberikan intervensi aktif, tetapi alokasi kelompok <strong>tidak dilakukan secara acak</strong> — ditentukan berdasarkan kriteria yang sudah ada.</p>
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Desain Umum</h3>
+              <ul>
+                <li>Pre-post dengan kelompok kontrol</li>
+                <li><em>Difference-in-differences</em></li>
+                <li>Matching antar kelompok</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Keterbatasan</h3>
+              <ul>
+                <li>Confounding residual lebih tinggi dari RCT</li>
+                <li>Validitas internal lebih lemah</li>
+                <li>Namun cukup kuat untuk rekomendasi kebijakan kesehatan masyarakat</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p><strong>Contoh RM:</strong> "Apakah program UKGS dengan sikat gigi bersama di SD A lebih efektif menurunkan rerata indeks plak dibandingkan SD B tanpa program UKGS setelah 6 bulan intervensi?" — Pre-post di dua sekolah yang dimatching; analisis difference-in-differences.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">RCT &amp; Quasi · Quasi-Eksperimental</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 5 · Sub 3</div>
+          <div class="slide-title">RCT vs Quasi-Eksperimental</div>
+          <div class="slide-subtitle">Kapan Memilih yang Mana?</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>RCT — Pilih jika:</h3>
+              <ul>
+                <li>Pertanyaan kausalitas harus sangat kuat</li>
+                <li>Intervensi dapat distandardisasi pada individu</li>
+                <li>Randomisasi individu etis dan praktis</li>
+                <li>Sumber daya memadai (waktu, biaya, subjek)</li>
+                <li>Hasil untuk publikasi atau registrasi produk</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Quasi — Pilih jika:</h3>
+              <ul>
+                <li>Randomisasi tidak praktis (level kelas/sekolah/komunitas)</li>
+                <li>Intervensi sudah berjalan — tidak bisa diacak ulang</li>
+                <li>Sumber daya terbatas namun kontrol tetap diperlukan</li>
+                <li>Evaluasi program kesehatan masyarakat yang sudah ada</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Kekuatan bukti: <strong>RCT &gt; Quasi-eksperimental &gt; Observasional analitik</strong>. Namun quasi-eksperimental yang dirancang cermat masih jauh lebih kuat daripada studi observasional dalam mengevaluasi efektivitas intervensi.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">RCT &amp; Quasi · Perbandingan</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 6 — Kuantitatif vs Kualitatif ══ -->
+  <div class="topic-col" data-topic="6">
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 6</div>
+          <div class="slide-title">Kuantitatif vs Kualitatif</div>
+          <div class="slide-subtitle">Dua Alat untuk Pertanyaan yang Berbeda</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Kuantitatif</h3>
+              <ul>
+                <li>Bekerja dengan <strong>angka</strong></li>
+                <li>Contoh: skor DMFT, kedalaman poket, IC₅₀</li>
+                <li>Kekuatan: objektivitas, presisi, generalisasi</li>
+                <li>Analisis statistik</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Kualitatif</h3>
+              <ul>
+                <li>Bekerja dengan <strong>kata-kata dan makna</strong></li>
+                <li>Contoh: mengapa pasien takut ke dokter gigi</li>
+                <li>Metode: wawancara, FGD, observasi</li>
+                <li>Prinsip saturasi data</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p><strong>Mixed-method</strong> menggabungkan keduanya secara terintegrasi. Kuantitatif mengidentifikasi pola; kualitatif menjelaskan <em>mengapa</em> pola tersebut terjadi. Keduanya sama-sama ilmiah.</p>
+          </div>
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Contoh RM Kuantitatif</h3>
+              <p>"Berapa rerata indeks DMFT dan bagaimana distribusinya pada siswa SMP di Kota Semarang tahun 2025?"</p>
+            </div>
+            <div class="slide-col">
+              <h3>Contoh RM Kualitatif</h3>
+              <p>"Apa faktor penghambat yang dipersepsikan ibu dari keluarga kurang mampu dalam membawa anak ke dokter gigi?"</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Kuantitatif vs Kualitatif</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 7 — In Vitro ══ -->
+  <div class="topic-col" data-topic="7">
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 7</div>
+          <div class="slide-title">Penelitian In Vitro</div>
+          <div class="slide-subtitle">"Dalam Kaca" — Di Luar Organisme Hidup</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>Penelitian in vitro dilakukan menggunakan komponen biologis yang telah diisolasi (bakteri, sel, jaringan) dalam kondisi laboratorium terkontrol. Dalam jalur penelitian biomedis, in vitro adalah <strong>tahap kedua</strong> — setelah in silico, sebelum in vivo.</p>
+          <div class="slide-img">
+            <svg viewBox="0 0 480 130" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <marker id="arrc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#c24e2e"/>
+                </marker>
+              </defs>
+              <!-- Hierarchy pipeline -->
+              <rect x="10" y="40" width="88" height="50" rx="10" fill="#f5ddd6" stroke="#c24e2e" stroke-width="2"/>
+              <text x="54" y="63" text-anchor="middle" fill="#3a1a10" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">IN SILICO</text>
+              <text x="54" y="78" text-anchor="middle" fill="#6a3020" font-size="8.5" font-family="DM Sans,sans-serif">Prediksi komputasi</text>
+
+              <line x1="98" y1="65" x2="130" y2="65" stroke="#c24e2e" stroke-width="2" marker-end="url(#arrc)"/>
+
+              <rect x="130" y="30" width="88" height="70" rx="10" fill="#ee6c4d"/>
+              <text x="174" y="57" text-anchor="middle" fill="white" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">IN VITRO</text>
+              <text x="174" y="72" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8.5" font-family="DM Sans,sans-serif">Uji komponen</text>
+              <text x="174" y="85" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8.5" font-family="DM Sans,sans-serif">biologis terisolasi</text>
+
+              <line x1="218" y1="65" x2="250" y2="65" stroke="#c24e2e" stroke-width="2" marker-end="url(#arrc)"/>
+
+              <rect x="250" y="30" width="88" height="70" rx="10" fill="#c24e2e"/>
+              <text x="294" y="57" text-anchor="middle" fill="white" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">IN VIVO</text>
+              <text x="294" y="72" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8.5" font-family="DM Sans,sans-serif">Uji organisme</text>
+              <text x="294" y="85" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8.5" font-family="DM Sans,sans-serif">hidup utuh</text>
+
+              <line x1="338" y1="65" x2="370" y2="65" stroke="#c24e2e" stroke-width="2" marker-end="url(#arrc)"/>
+
+              <rect x="370" y="20" width="100" height="90" rx="10" fill="#3a1a10"/>
+              <text x="420" y="54" text-anchor="middle" fill="white" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">UJI KLINIS</text>
+              <text x="420" y="70" text-anchor="middle" fill="#fae8e2" font-size="8.5" font-family="DM Sans,sans-serif">Fase I → IV</text>
+              <text x="420" y="84" text-anchor="middle" fill="#ee6c4d" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">MANUSIA</text>
+
+              <text x="240" y="18" text-anchor="middle" fill="#c24e2e" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">HIERARKI PENGUJIAN BIOMEDIS</text>
+            </svg>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Vitro · Definisi &amp; Posisi</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 7 · Sub 2</div>
+          <div class="slide-title">Metode Utama In Vitro Mikrobiologi</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li><strong>Difusi Agar (Kirby-Bauer)</strong> — cakram/sumur; diameter zona hambat (mm)</li>
+            <li><strong>Dilusi Broth</strong> — serial dilution; MIC (Minimum Inhibitory Concentration) dan MBC</li>
+            <li><strong>Uji Biofilm</strong> — lebih relevan klinis; bakteri 10–1000× lebih resisten dibanding planktoni</li>
+            <li><strong>MTT Assay / AlamarBlue</strong> — uji sitotoksisitas; melaporkan IC₅₀ dan <em>selectivity index</em></li>
+          </ul>
+          <div class="highlight-box">
+            <p>Kontrol positif (klorheksidin 0,2%) dan kontrol negatif (aquades/pelarut) adalah elemen <strong>wajib</strong> dalam setiap eksperimen in vitro yang valid.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Vitro · Metode</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 7 · Sub 3</div>
+          <div class="slide-title">Kelebihan &amp; Keterbatasan In Vitro</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Kelebihan</h3>
+              <ul>
+                <li>Kontrol variabel sangat tinggi</li>
+                <li>Cepat dan efisien biaya</li>
+                <li>Ideal untuk skrining awal</li>
+                <li>Replikasi mudah (minimal triplicate)</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Keterbatasan</h3>
+              <ul>
+                <li>Tidak dapat memodelkan ADME (absorpsi, distribusi, metabolisme, ekskresi)</li>
+                <li>Tidak ada respons imun</li>
+                <li>Uji planktoni melebih-lebihkan efektivitas vs kondisi klinis biofilm</li>
+              </ul>
+            </div>
+          </div>
+          <div class="slide-quote">
+            "Senyawa yang efektif membunuh bakteri dalam tabung belum tentu aman dan efektif dalam sistem biologis utuh — uji in vivo tetap diperlukan."
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Vitro · Evaluasi</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 8 — In Vivo ══ -->
+  <div class="topic-col" data-topic="8">
+
+    <div class="slide th-sky">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 8</div>
+          <div class="slide-title">Penelitian In Vivo</div>
+          <div class="slide-subtitle">"Dalam yang Hidup" — Organisme Utuh</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>In vivo menghadapi kompleksitas penuh dari kehidupan: sistem imun aktif, metabolisme dinamis, interaksi antar organ, dan regulasi hormonal — semua yang tidak dapat direplikasi dalam tabung reaksi.</p>
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Hewan Coba Umum</h3>
+              <ul>
+                <li><strong>Tikus Wistar / Sprague-Dawley</strong> — paling umum, model karies terstandarisasi (diet 56 Keyes)</li>
+                <li><strong>Mencit</strong> — strain knockout dan transgenik</li>
+                <li><strong>Kelinci</strong> — uji biokompatibilitas material</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Keunggulan vs In Vitro</h3>
+              <ul>
+                <li>Relevansi biologis penuh</li>
+                <li>Dapat mengamati ADME</li>
+                <li>Respon imun teramati</li>
+                <li>Syarat wajib sebelum uji klinis</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Vivo · Definisi &amp; Model</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sky">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 8 · Sub 2</div>
+          <div class="slide-title">Prinsip Etika: The 3Rs</div>
+          <div class="slide-subtitle">Russell &amp; Burch, 1959 — Landasan Global Etika Penelitian Hewan</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Replace</h3>
+              <p>Pertimbangkan apakah in vitro atau in silico dapat menjawab pertanyaan yang sama. Gunakan hewan hanya jika tidak ada alternatif valid.</p>
+            </div>
+            <div class="slide-col">
+              <h3>Reduce</h3>
+              <p>Gunakan jumlah hewan seminimal mungkin secara statistik — berdasarkan perhitungan besar sampel (kekuatan statistik minimal 80%).</p>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p><strong>Refine</strong> — Meminimalkan penderitaan: anestesi memadai, <em>enrichment</em> lingkungan kandang, penanganan humanis, dan <em>humane endpoints</em>. Di Indonesia, penelitian hewan wajib mendapat persetujuan <strong>Komite Etik Penelitian Hewan (KEPA)</strong>.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Vivo · Etika 3Rs</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sky">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 8 · Sub 3</div>
+          <div class="slide-title">Keterbatasan In Vivo</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>Meskipun lebih relevan dari in vitro, in vivo memiliki keterbatasan penting dalam hal <strong>extrapolability</strong> ke manusia.</p>
+          <ul>
+            <li>Perbedaan anatomis, fisiologis, dan metabolisme antara hewan dan manusia</li>
+            <li>Komposisi mikrobioma rongga mulut tikus berbeda dari manusia</li>
+            <li>Senyawa efektif pada tikus tidak selalu efektif pada manusia — dan sebaliknya</li>
+            <li>Biaya dan waktu pemeliharaan hewan yang besar</li>
+          </ul>
+          <div class="slide-quote">
+            "Inilah mengapa uji klinis pada manusia tetap diperlukan bahkan setelah data in vivo yang positif."
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Vivo · Keterbatasan</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 9 — In Silico ══ -->
+  <div class="topic-col" data-topic="9">
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 9</div>
+          <div class="slide-title">Penelitian In Silico</div>
+          <div class="slide-subtitle">Komputer sebagai Instrumen Utama</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <p>In silico menggunakan simulasi komputer, pemodelan matematika, kecerdasan buatan, dan bioinformatika untuk <strong>memprediksi, mensimulasikan, dan menganalisis</strong> fenomena biologis.</p>
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Peran dalam Pipeline</h3>
+              <ul>
+                <li>Tahap paling awal: virtual screening</li>
+                <li>Analisis ribuan kandidat senyawa dalam hitungan jam</li>
+                <li>Hanya senyawa paling menjanjikan yang dilanjutkan ke in vitro</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Database Penting</h3>
+              <ul>
+                <li><strong>PDB</strong> (rcsb.org) — struktur protein 3D</li>
+                <li><strong>PubChem</strong> — senyawa kimia</li>
+                <li><strong>ZINC Database</strong> — senyawa drug-like</li>
+                <li><strong>UniProt</strong> — sekuens protein</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Silico · Definisi &amp; Peran</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 9 · Sub 2</div>
+          <div class="slide-title">Molecular Docking</div>
+          <div class="slide-subtitle">Memvisualisasikan Interaksi Obat–Reseptor</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-img">
+            <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <marker id="arrd" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                  <polygon points="0 0, 7 2.5, 0 5" fill="#98c1d9"/>
+                </marker>
+              </defs>
+              <!-- Protein -->
+              <ellipse cx="140" cy="80" rx="110" ry="62" fill="#1e2a3a" stroke="#3d5a80" stroke-width="2"/>
+              <text x="140" y="60" text-anchor="middle" fill="#98c1d9" font-size="10" font-family="DM Sans,sans-serif" font-weight="600">PROTEIN TARGET</text>
+              <text x="140" y="75" text-anchor="middle" fill="#98c1d9" font-size="8.5" font-family="DM Sans,sans-serif">(misal: GtfB S. mutans)</text>
+              <text x="140" y="92" text-anchor="middle" fill="#e0fbfc" font-size="8" font-family="DM Sans,sans-serif">PDB ID: 3AIE</text>
+              <!-- Binding site -->
+              <ellipse cx="215" cy="80" rx="26" ry="22" fill="#3d5a80" opacity="0.8"/>
+              <text x="215" y="84" text-anchor="middle" fill="white" font-size="7.5" font-family="DM Sans,sans-serif" font-weight="600">Binding</text>
+              <text x="215" y="74" text-anchor="middle" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">site</text>
+
+              <!-- Ligand -->
+              <circle cx="330" cy="80" r="34" fill="#ee6c4d" opacity="0.9"/>
+              <text x="330" y="76" text-anchor="middle" fill="white" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">LIGAN</text>
+              <text x="330" y="90" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8.5" font-family="DM Sans,sans-serif">(misal: Eugenol)</text>
+
+              <!-- Arrow docking -->
+              <line x1="296" y1="80" x2="244" y2="80" stroke="#ee6c4d" stroke-width="2.5" marker-end="url(#arrd)" stroke-dasharray="5,3"/>
+
+              <!-- Output -->
+              <rect x="390" y="50" width="85" height="60" rx="8" fill="#293241" stroke="#98c1d9" stroke-width="1.5"/>
+              <text x="432" y="73" text-anchor="middle" fill="#e0fbfc" font-size="8.5" font-family="DM Sans,sans-serif" font-weight="600">Binding</text>
+              <text x="432" y="85" text-anchor="middle" fill="#e0fbfc" font-size="8.5" font-family="DM Sans,sans-serif" font-weight="600">Affinity</text>
+              <text x="432" y="100" text-anchor="middle" fill="#ee6c4d" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">kcal/mol</text>
+              <line x1="364" y1="80" x2="388" y2="80" stroke="#98c1d9" stroke-width="1.5" marker-end="url(#arrd)"/>
+
+              <text x="240" y="148" text-anchor="middle" fill="#98c1d9" font-size="8.5" font-family="DM Sans,sans-serif">Semakin negatif nilai binding affinity → interaksi semakin kuat</text>
+            </svg>
+          </div>
+          <ul>
+            <li>Software populer: <strong>AutoDock Vina</strong> (gratis, open source), Glide (Schrödinger), GOLD</li>
+            <li>Validasi wajib: <em>redocking</em> — RMSD ligan asli vs hasil docking harus &lt; 2 Å</li>
+          </ul>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Silico · Molecular Docking</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-navy">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 9 · Sub 3</div>
+          <div class="slide-title">Prosedur &amp; Interpretasi Docking</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Tahapan</h3>
+              <ul>
+                <li>Download struktur protein dari PDB</li>
+                <li>Preparasi protein: tambah H, hitung muatan, definisi grid box</li>
+                <li>Preparasi ligan: struktur 3D energi minimum, muatan Gasteiger-Marsili</li>
+                <li>Running docking → pilih pose terbaik</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Interpretasi</h3>
+              <ul>
+                <li>Binding affinity ligan alami/obat: umumnya -6 s/d -12 kcal/mol</li>
+                <li>Amati jenis interaksi: ikatan hidrogen, hidrofobik, van der Waals</li>
+                <li>Bandingkan dengan ligan referensi (klorheksidin, dst.)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Hasil docking adalah <strong>prediksi komputasional</strong> — perlu dikonfirmasi melalui uji kinetika enzim in vitro sebelum kesimpulan definitif dapat ditarik.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">In Silico · Prosedur</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 10 — Komparatif vs Korelatif ══ -->
+  <div class="topic-col" data-topic="10">
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 10</div>
+          <div class="slide-title">Komparatif vs Korelatif</div>
+          <div class="slide-subtitle">Dua Strategi Analitik yang Sering Tertukar</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Penelitian Korelatif</h3>
+              <ul>
+                <li>Menguji apakah dua variabel <strong>bergerak bersama</strong></li>
+                <li>Pertanyaan: "apakah ada hubungan antara X dan Y?"</li>
+                <li>Ukuran: koefisien korelasi (r, rs), OR, RR</li>
+                <li>Contoh: hubungan antara frekuensi konsumsi gula dengan skor DMFT</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Penelitian Komparatif</h3>
+              <ul>
+                <li>Membandingkan <strong>nilai rata-rata atau proporsi</strong> antar kelompok</li>
+                <li>Pertanyaan: "apakah ada perbedaan X antara kelompok A dan B?"</li>
+                <li>Ukuran: beda rerata, beda proporsi</li>
+                <li>Contoh: perbedaan rerata DMFT antara siswa urban dan rural</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Keduanya termasuk penelitian analitik. Perbedaannya bukan pada desain, melainkan pada <strong>jenis pertanyaan</strong> dan cara melaporkan hasilnya. Satu studi cross-sectional bisa sekaligus korelatif dan komparatif.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Komparatif vs Korelatif · Perbedaan</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 10 · Sub 2</div>
+          <div class="slide-title">Uji Statistik yang Berbeda</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-img">
+            <svg viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <marker id="afk" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                  <polygon points="0 0, 7 2.5, 0 5" fill="#3d5a80"/>
+                </marker>
+              </defs>
+              <!-- Korelatif box -->
+              <rect x="10" y="30" width="200" height="130" rx="10" fill="#e4f0f8" stroke="#3d5a80" stroke-width="1.5"/>
+              <text x="110" y="52" text-anchor="middle" fill="#3d5a80" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">KORELATIF</text>
+              <text x="110" y="68" text-anchor="middle" fill="#3d5a80" font-size="8.5" font-family="DM Sans,sans-serif">"Apakah X berhubungan dengan Y?"</text>
+              <text x="110" y="90" text-anchor="middle" fill="#1a2e42" font-size="8.5" font-family="DM Sans,sans-serif">Data numerik: Pearson / Spearman</text>
+              <text x="110" y="106" text-anchor="middle" fill="#1a2e42" font-size="8.5" font-family="DM Sans,sans-serif">Data kategorik: Chi-square, Fisher</text>
+              <text x="110" y="122" text-anchor="middle" fill="#1a2e42" font-size="8.5" font-family="DM Sans,sans-serif">Multivariat: Regresi logistik / linear</text>
+              <text x="110" y="140" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Output: r, OR, RR, β</text>
+
+              <!-- Komparatif box -->
+              <rect x="270" y="30" width="200" height="130" rx="10" fill="#f5ddd6" stroke="#ee6c4d" stroke-width="1.5"/>
+              <text x="370" y="52" text-anchor="middle" fill="#c24e2e" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">KOMPARATIF</text>
+              <text x="370" y="68" text-anchor="middle" fill="#c24e2e" font-size="8.5" font-family="DM Sans,sans-serif">"Apakah ada perbedaan X antar kelompok?"</text>
+              <text x="370" y="90" text-anchor="middle" fill="#3a1a10" font-size="8.5" font-family="DM Sans,sans-serif">2 kelompok, numerik: t-test / Mann-Whitney</text>
+              <text x="370" y="106" text-anchor="middle" fill="#3a1a10" font-size="8.5" font-family="DM Sans,sans-serif">&gt;2 kelompok: ANOVA / Kruskal-Wallis</text>
+              <text x="370" y="122" text-anchor="middle" fill="#3a1a10" font-size="8.5" font-family="DM Sans,sans-serif">Proporsi: Chi-square</text>
+              <text x="370" y="140" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif" font-weight="600">Output: beda rerata, p-value, CI 95%</text>
+
+              <!-- VS -->
+              <text x="240" y="100" text-anchor="middle" fill="#3d5a80" font-size="18" font-family="DM Sans,sans-serif" font-weight="700" opacity="0.4">vs</text>
+            </svg>
+          </div>
+          <div class="highlight-box">
+            <p><strong>Contoh RM Korelatif:</strong> "Apakah terdapat hubungan antara skor kecemasan dental (MDAS) dengan frekuensi kunjungan ke dokter gigi?" — Uji Spearman.<br>
+            <strong>Contoh RM Komparatif:</strong> "Apakah terdapat perbedaan rerata DMFT antara siswa SD di daerah urban dan rural Kota Semarang?" — Uji Mann-Whitney.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Komparatif vs Korelatif · Uji Statistik</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 11 — Kontras Semua Jenis Penelitian ══ -->
+  <div class="topic-col" data-topic="11">
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 11</div>
+          <div class="slide-title">Satu Masalah, Banyak Pendekatan</div>
+          <div class="slide-subtitle">Pertanyaan dasar: mengapa anak yang banyak konsumsi gula mengalami banyak karies?</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li><strong>Deskriptif:</strong> "Bagaimana gambaran tingkat konsumsi gula harian dan indeks DMFT pada siswa SD Gempita Semarang?"</li>
+            <li><strong>Korelatif (cross-sectional analitik):</strong> "Apakah terdapat hubungan antara frekuensi konsumsi gula (≥3×/hari) dengan indeks DMFT pada siswa SD Gempita?"</li>
+            <li><strong>Komparatif (cross-sectional):</strong> "Apakah terdapat perbedaan rerata DMFT antara siswa SD Gempita yang mengonsumsi gula tinggi (≥3×/hari) dan rendah (&lt;1×/hari)?"</li>
+          </ul>
+          <div class="highlight-box">
+            <p>Ketiga RM ini berasal dari satu masalah yang sama. Perbedaannya hanya pada pertanyaan yang diajukan: menggambarkan, menghubungkan, atau membandingkan.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Satu Masalah · Pendekatan Dasar</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 11 · Sub 2</div>
+          <div class="slide-title">Diperdalam: Dimensi Waktu</div>
+          <div class="slide-subtitle">Masih soal gula dan karies — diuji dengan rancangan berbeda</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li><strong>Case-Control:</strong> "Apakah konsumsi gula ≥3×/hari merupakan faktor risiko DMFT ≥5 pada siswa SD? (OR=? CI 95%)" — Kasus: DMFT ≥5; kontrol: DMFT ≤1; paparan ditanyakan retrospektif.</li>
+            <li><strong>Kohort Prospektif:</strong> "Apakah siswa SD yang mengonsumsi gula ≥3×/hari mengalami DMFT increment lebih besar dibanding yang &lt;1×/hari setelah follow-up 12 bulan?"</li>
+            <li><strong>Quasi-Eksperimental:</strong> "Apakah edukasi pembatasan konsumsi gula selama 3 bulan di SD Gempita A lebih efektif menurunkan DMFT increment dibanding SD Gempita B tanpa edukasi?"</li>
+            <li><strong>RCT:</strong> "Apakah xylitol chewing gum 2×/hari selama 6 bulan lebih efektif mencegah karies baru dibandingkan permen biasa pada siswa SD?" — Double-blind, cluster randomization.</li>
+          </ul>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Satu Masalah · Dimensi Waktu &amp; Intervensi</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-coral">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 11 · Sub 3</div>
+          <div class="slide-title">Diperdalam: Laboratorium &amp; Komputasi</div>
+          <div class="slide-subtitle">Pendekatan mekanistik dari masalah yang sama</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <ul>
+            <li><strong>In Vitro:</strong> "Apakah ekstrak stevia konsentrasi 50 mg/mL menghambat pertumbuhan <em>Streptococcus mutans</em> ATCC 25175 secara signifikan dibandingkan sukrosa sebagai kontrol negatif?" — MIC, zona hambat Kirby-Bauer.</li>
+            <li><strong>In Vivo:</strong> "Apakah diet 56 Keyes yang dimodifikasi dengan substitusi stevia menurunkan jumlah koloni <em>S. mutans</em> dan skor karies pada tikus Wistar dibanding diet sukrosa penuh?"</li>
+            <li><strong>In Silico:</strong> "Apakah senyawa steviosida memiliki potensi sebagai inhibitor glucosyltransferase B <em>S. mutans</em> berdasarkan molecular docking terhadap struktur GtfB (PDB ID: 3AIE)?"</li>
+            <li><strong>Kualitatif:</strong> "Bagaimana persepsi orang tua siswa SD tentang risiko konsumsi gula berlebihan terhadap kesehatan gigi anak?" — FGD, tematik analisis.</li>
+          </ul>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Satu Masalah · Lab &amp; Komputasi</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TOPIK 12 — Memilih Rancangan ══ -->
+  <div class="topic-col" data-topic="12">
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 10</div>
+          <div class="slide-title">Memilih Rancangan yang Tepat</div>
+          <div class="slide-subtitle">Dari Rumusan Masalah ke Desain Penelitian</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-img">
+            <svg viewBox="0 0 500 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+              <defs>
+                <marker id="af" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                  <polygon points="0 0, 7 2.5, 0 5" fill="#3d5a80"/>
+                </marker>
+              </defs>
+              <!-- Start -->
+              <rect x="185" y="8" width="130" height="34" rx="8" fill="#3d5a80"/>
+              <text x="250" y="30" text-anchor="middle" fill="white" font-size="10" font-family="DM Sans,sans-serif" font-weight="700">RUMUSAN MASALAH</text>
+              <line x1="250" y1="42" x2="250" y2="58" stroke="#3d5a80" stroke-width="2" marker-end="url(#af)"/>
+
+              <!-- Q1: Tujuan -->
+              <rect x="158" y="58" width="184" height="30" rx="7" fill="#e4f0f8" stroke="#3d5a80" stroke-width="1.5"/>
+              <text x="250" y="78" text-anchor="middle" fill="#1a2e42" font-size="9" font-family="DM Sans,sans-serif">Tujuan: Deskripsi atau Menguji Hubungan?</text>
+
+              <line x1="200" y1="88" x2="130" y2="106" stroke="#3d5a80" stroke-width="1.5" marker-end="url(#af)"/>
+              <line x1="300" y1="88" x2="370" y2="106" stroke="#3d5a80" stroke-width="1.5" marker-end="url(#af)"/>
+              <text x="130" y="103" text-anchor="middle" fill="#ee6c4d" font-size="8.5" font-family="DM Sans,sans-serif" font-weight="700">Deskripsi</text>
+              <text x="370" y="103" text-anchor="middle" fill="#ee6c4d" font-size="8.5" font-family="DM Sans,sans-serif" font-weight="700">Hubungan</text>
+
+              <rect x="72" y="110" width="116" height="28" rx="6" fill="#ee6c4d"/>
+              <text x="130" y="128" text-anchor="middle" fill="white" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">Deskriptif/Survei</text>
+
+              <!-- Branch dari Hubungan -->
+              <rect x="312" y="110" width="116" height="28" rx="6" fill="#ddf2fa" stroke="#3d5a80" stroke-width="1.5"/>
+              <text x="370" y="128" text-anchor="middle" fill="#1a2e42" font-size="9" font-family="DM Sans,sans-serif">Ada Intervensi?</text>
+
+              <line x1="340" y1="138" x2="296" y2="154" stroke="#3d5a80" stroke-width="1.5" marker-end="url(#af)"/>
+              <line x1="400" y1="138" x2="446" y2="154" stroke="#3d5a80" stroke-width="1.5" marker-end="url(#af)"/>
+              <text x="290" y="152" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif" font-weight="700">Tidak</text>
+              <text x="450" y="152" text-anchor="middle" fill="#ee6c4d" font-size="8" font-family="DM Sans,sans-serif" font-weight="700">Ya</text>
+
+              <rect x="216" y="156" width="82" height="44" rx="6" fill="#293241" stroke="#98c1d9" stroke-width="1.5"/>
+              <text x="257" y="174" text-anchor="middle" fill="#e0fbfc" font-size="8.5" font-family="DM Sans,sans-serif" font-weight="600">Observasional</text>
+              <text x="257" y="188" text-anchor="middle" fill="#98c1d9" font-size="7.5" font-family="DM Sans,sans-serif">CC · Kohort · CS</text>
+
+              <rect x="410" y="156" width="82" height="44" rx="6" fill="#ee6c4d"/>
+              <text x="451" y="174" text-anchor="middle" fill="white" font-size="8.5" font-family="DM Sans,sans-serif" font-weight="600">Eksperimental</text>
+              <text x="451" y="188" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7.5" font-family="DM Sans,sans-serif">RCT · Quasi</text>
+            </svg>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Memilih Rancangan · Alur</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div class="slide-topic-label">Topik 10 · Sub 2</div>
+          <div class="slide-title">Pertimbangan Praktis</div>
+          <div class="slide-subtitle">Feasibilitas dalam Konteks Skripsi S1</div>
+          <div class="divider"></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-cols">
+            <div class="slide-col">
+              <h3>Faktor Pertimbangan</h3>
+              <ul>
+                <li><strong>Pertanyaan penelitian</strong> — rancangan harus mampu menjawabnya</li>
+                <li><strong>Etika</strong> — intervensi berbahaya tidak bisa di-RCT</li>
+                <li><strong>Waktu</strong> — kohort prospektif tidak realistis untuk skripsi</li>
+                <li><strong>Biaya dan SDM</strong> tersedia</li>
+              </ul>
+            </div>
+            <div class="slide-col">
+              <h3>Pilihan Realistis S1</h3>
+              <ul>
+                <li><strong>Cross-sectional analitik</strong> — paling umum</li>
+                <li><strong>In vitro eksperimental</strong> — untuk penelitian material/farmakologi</li>
+                <li><strong>Quasi-eksperimental</strong> — jika ada intervensi terukur</li>
+                <li><strong>Case report / deskriptif</strong> — untuk kasus klinis unik</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p>Tidak ada rancangan yang universally superior. Rancangan terbaik adalah yang paling sesuai untuk menjawab pertanyaan penelitian Anda secara <strong>valid, etis, dan feasibel</strong>.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span class="slide-footer-text">Memilih Rancangan · Pertimbangan</span>
+          <div class="progress-dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide th-sb-cover">
+      <div class="slide-inner" style="padding:0; position:relative; overflow:hidden; justify-content:flex-start;">
+
+        <!-- ── BACKGROUND: large ghost text + geometry ── -->
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 400 710" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <!-- Top accent bar -->
+          <rect x="0" y="0" width="400" height="3" fill="#ee6c4d" opacity="0.55"/>
+          <!-- Large ghost "TERIMA" text as background -->
+          <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle"
+                font-family="DM Serif Display,Georgia,serif"
+                font-size="138" fill="none"
+                stroke="#3d5a80" stroke-width="0.6" opacity="0.10"
+                letter-spacing="-4">TERIMA</text>
+          <!-- Large ghost "KASIH" text -->
+          <text x="50%" y="72%" dominant-baseline="middle" text-anchor="middle"
+                font-family="DM Serif Display,Georgia,serif"
+                font-size="138" fill="none"
+                stroke="#3d5a80" stroke-width="0.6" opacity="0.10"
+                letter-spacing="-4">KASIH</text>
+          <!-- Coral accent circle -->
+          <circle cx="340" cy="120" r="90" fill="none" stroke="#ee6c4d" stroke-width="1.0" opacity="0.20"/>
+          <circle cx="340" cy="120" r="55" fill="none" stroke="#ee6c4d" stroke-width="0.5" opacity="0.14"/>
+          <!-- Bottom left circle -->
+          <circle cx="30" cy="630" r="130" fill="none" stroke="#98c1d9" stroke-width="1.0" opacity="0.13"/>
+          <!-- Thin diagonal lines -->
+          <line x1="0" y1="200" x2="400" y2="600" stroke="#98c1d9" stroke-width="0.5" opacity="0.07"/>
+          <line x1="0" y1="240" x2="400" y2="640" stroke="#98c1d9" stroke-width="0.5" opacity="0.05"/>
+        </svg>
+
+        <!-- ── CONTENT ── -->
+        <div style="position:relative; z-index:2; display:flex; flex-direction:column; height:100%; padding: clamp(1.4rem,5vw,3rem);">
+
+          <!-- Kop -->
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:28px; height:2px; background:#ee6c4d; border-radius:2px;"></div>
+            <span style="font-size:clamp(0.5rem,1.3vw,0.62rem); font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#98c1d9; font-family:'DM Sans',sans-serif;">FKG UNISSULA · Metodologi Penelitian</span>
+          </div>
+
+          <!-- Main text — centered vertically -->
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; gap: 0.1em;">
+            <div style="font-family:'DM Sans',sans-serif; font-size:clamp(0.6rem,1.6vw,0.72rem); font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:#ee6c4d; margin-bottom:0.6rem;">— Akhir Sesi —</div>
+            <div style="font-family:'DM Serif Display',Georgia,serif; font-size:clamp(2.8rem,11vw,5.5rem); line-height:0.95; color:#e8f4fc; letter-spacing:-0.02em;">Terima<br>Kasih</div>
+            <div style="width:56px; height:3px; background:#ee6c4d; border-radius:3px; margin-top:1.4rem;"></div>
+            <div style="margin-top:1.2rem; font-family:'DM Sans',sans-serif; font-size:clamp(0.75rem,2vw,0.9rem); color:#98c1d9; font-weight:300; font-style:italic; letter-spacing:0.03em;">Pertanyaan &amp; Diskusi</div>
+          </div>
+
+          <!-- Bottom signature -->
+          <div style="border-top:1px solid rgba(152,193,217,0.18); padding-top:0.9rem;">
+            <span style="font-size:clamp(0.6rem,1.5vw,0.72rem); color:rgba(152,193,217,0.55); font-family:'DM Sans',sans-serif; letter-spacing:0.06em;">drg. Muhammad Dian Firdausy, M.Sc(DMS) · FKG UNISSULA</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /zoom-wrap -->
+</div><!-- /deck -->
+<!-- UI Layer -->
+<div id="ui-layer">
+  <button class="ui-btn" id="nav-up" title="Topik ↑">
+    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+  <button class="ui-btn" id="nav-down" title="Topik ↓">
+    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <button class="ui-btn" id="nav-left" title="Sub ←">
+    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="ui-btn" id="nav-right" title="Sub →">
+    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+
+  <div id="ctrl-cluster">
+    <button class="ui-btn" id="btn-fs" title="Fullscreen (F)">
+      <svg class="icon-svg" viewBox="0 0 24 24" id="fs-icon">
+        <polyline points="15 3 21 3 21 9"/>
+        <polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/>
+        <line x1="3" y1="21" x2="10" y2="14"/>
+      </svg>
+    </button>
+    <button class="ui-btn" id="btn-aplus" title="A+"><span class="btn-label">A+</span></button>
+    <button class="ui-btn" id="btn-aminus" title="A−"><span class="btn-label" style="font-size:calc(var(--usz)*0.23)">A−</span></button>
+    <button class="ui-btn" id="btn-zreset" title="Reset zoom"><span class="btn-label" style="font-size:calc(var(--usz)*0.22)">1×</span></button>
+  </div>
+
+  <div id="slide-indicator">T1 · S1</div>
+  <div id="zoom-indicator">100%</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const TOPICS = Array.from(document.querySelectorAll('.topic-col'));
+const NT     = TOPICS.length;
+const slides = TOPICS.map(col => Array.from(col.querySelectorAll('.slide')));
+const LIGHT  = ['th-nude-cover','th-nude','th-rose','th-sage','th-sb','th-sb-cover','th-coral','th-sky'];
+
+let curT = 0;
+let curS = new Array(NT).fill(0);
+let fScale = 1;
+const F_MIN=0.72, F_MAX=1.48, F_STEP=0.08;
+let zoom=1, zoomTimer=null;
+const Z_MIN=0.5, Z_MAX=3.0;
+
+/* ═══════════════════════════════════════════
+   POSITIONING — semua pakai px, konsisten
+   Posisi kanonik: setiap slide di tempat
+   yang benar berdasarkan curT / curS[t]
+═══════════════════════════════════════════ */
+function W(){ return window.innerWidth;  }
+function H(){ return window.innerHeight; }
+
+// Pasang semua slide ke posisi kanonik (tanpa transisi offset)
+function snapAll(){
+  TOPICS.forEach((col,t)=>{
+    col.style.transform = `translateY(${(t-curT)*H()}px)`;
+    slides[t].forEach((sl,s)=>{
+      sl.style.transform = `translateX(${(s-curS[t])*W()}px)`;
+    });
+  });
+}
+
+// Selama drag: geser kolom/slide berdasarkan offset jari
+// axis: 'h' = sub-slide horizontal, 'v' = topik vertikal
+// px  : offset dalam pixel (bisa negatif)
+function dragAll(axis, px){
+  TOPICS.forEach((col,t)=>{
+    const baseV = (t - curT) * H();
+    if(axis === 'v'){
+      // Kolom aktif ikut jari penuh
+      // Kolom atas  (t=curT-1): ikut jika drag ke bawah (px>0)
+      // Kolom bawah (t=curT+1): ikut jika drag ke atas  (px<0)
+      let off = 0;
+      if(t === curT)     off = px;
+      else if(t===curT-1 && px>0) off = px;   // peek atas
+      else if(t===curT+1 && px<0) off = px;   // peek bawah
+      col.style.transform = `translateY(${baseV + off}px)`;
+    } else {
+      col.style.transform = `translateY(${baseV}px)`;
+    }
+
+    slides[t].forEach((sl,s)=>{
+      const baseH = (s - curS[t]) * W();
+      if(axis === 'h' && t === curT){
+        let off = 0;
+        if(s === curS[t])     off = px;
+        else if(s===curS[t]-1 && px>0) off = px;  // peek kiri
+        else if(s===curS[t]+1 && px<0) off = px;  // peek kanan
+        sl.style.transform = `translateX(${baseH + off}px)`;
+      } else {
+        sl.style.transform = `translateX(${baseH}px)`;
+      }
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   TRANSITION CSS — on/off
+═══════════════════════════════════════════ */
+const TR_ON  = 'transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94)';
+const TR_OFF = 'none';
+
+function setTr(on){
+  const v = on ? TR_ON : TR_OFF;
+  TOPICS.forEach(col => col.style.transition = v);
+  slides.forEach(sa => sa.forEach(sl => sl.style.transition = v));
+}
+
+/* ═══════════════════════════════════════════
+   UI SYNC
+═══════════════════════════════════════════ */
+function isLight(){
+  const sl = slides[curT][curS[curT]];
+  return sl && LIGHT.some(c => sl.classList.contains(c));
+}
+function syncUI(){
+  const lm = isLight();
+  document.querySelectorAll('.ui-btn').forEach(b => b.classList.toggle('lm', lm));
+  document.getElementById('slide-indicator').classList.toggle('lm', lm);
+}
+function updateInd(){
+  document.getElementById('slide-indicator').textContent = `T${curT+1} · S${curS[curT]+1}`;
+}
+function updateDots(){
+  slides.forEach((sa,t) => {
+    sa.forEach(sl => {
+      const c = sl.querySelector('.progress-dots'); if(!c) return;
+      c.querySelectorAll('span').forEach((d,i) => d.classList.toggle('active', i===curS[t]));
+    });
+  });
+}
+function updateBtns(){
+  const ns = slides[curT].length;
+  dis('nav-up',    curT===0);
+  dis('nav-down',  curT===NT-1);
+  dis('nav-left',  curS[curT]===0);
+  dis('nav-right', curS[curT]===ns-1);
+}
+function dis(id,v){ document.getElementById(id).dataset.disabled = v?'true':'false'; }
+
+function setActive(){
+  document.querySelectorAll('.slide.is-active').forEach(e => e.classList.remove('is-active'));
+  const a = slides[curT][curS[curT]];
+  if(a) a.classList.add('is-active');
+  updateInd(); updateDots(); updateBtns(); syncUI();
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGASI SNAP (tombol / keyboard / wheel)
+═══════════════════════════════════════════ */
+function goT(d){
+  const n = curT+d;
+  if(n<0 || n>=NT) return;
+  setTr(true); curT=n;
+  panX=0; panY=0;
+  applyZoom(1, false);
+  snapAll(); setActive();
+}
+function goS(d){
+  const n = curS[curT]+d;
+  if(n<0 || n>=slides[curT].length) return;
+  setTr(true); curS[curT]=n;
+  panX=0; panY=0;
+  applyZoom(1, false);
+  snapAll(); setActive();
+}
+
+/* ═══════════════════════════════════════════
+   ZOOM + PAN
+   ─────────────────────────────────────────
+   zoom-wrap di-scale dari center, lalu
+   di-translate untuk pan. Pan dibatasi agar
+   tidak keluar dari area konten yang di-zoom.
+═══════════════════════════════════════════ */
+const zWrap = document.getElementById('zoom-wrap');
+const zInd  = document.getElementById('zoom-indicator');
+
+let panX=0, panY=0;   // offset pan dalam pixel (pre-scale)
+
+function clampPan(x, y, z){
+  // Area lebih dari layar saat di-zoom
+  const maxX = Math.max(0, (W()*(z-1))/2);
+  const maxY = Math.max(0, (H()*(z-1))/2);
+  return {
+    x: Math.min(maxX, Math.max(-maxX, x)),
+    y: Math.min(maxY, Math.max(-maxY, y))
+  };
+}
+
+function applyZoom(z, anim, nx, ny){
+  zoom = Math.min(Z_MAX, Math.max(Z_MIN, z));
+  // Reset pan ke 0 saat kembali ke zoom=1
+  if(zoom <= 1){ panX=0; panY=0; }
+  else {
+    const c = clampPan(nx!==undefined?nx:panX, ny!==undefined?ny:panY, zoom);
+    panX=c.x; panY=c.y;
+  }
+  zWrap.style.transition = anim ? 'transform 0.2s ease-out' : 'none';
+  zWrap.style.transform  = `scale(${zoom}) translate(${panX/zoom}px,${panY/zoom}px)`;
+  document.documentElement.style.setProperty('--zoom', zoom.toFixed(3));
+  zInd.textContent = Math.round(zoom*100)+'%';
+  zInd.classList.add('visible');
+  clearTimeout(zoomTimer);
+  zoomTimer = setTimeout(()=>zInd.classList.remove('visible'), 1200);
+}
+
+document.getElementById('btn-zreset').addEventListener('click', ()=>applyZoom(1,true));
+
+/* ═══════════════════════════════════════════
+   FULLSCREEN
+═══════════════════════════════════════════ */
+const btnFs  = document.getElementById('btn-fs');
+const fsIcon = document.getElementById('fs-icon');
+const FS_IN  = `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
+const FS_OUT = `<polyline points="4 14 4 20 10 20"/><polyline points="20 10 20 4 14 4"/><line x1="4" y1="20" x2="11" y2="13"/><line x1="20" y1="4" x2="13" y2="11"/>`;
+btnFs.addEventListener('click', ()=>{
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen().catch(()=>{});
+});
+document.addEventListener('fullscreenchange', ()=>{ fsIcon.innerHTML = document.fullscreenElement ? FS_OUT : FS_IN; });
+
+/* ── FONT ── */
+function setF(){ document.documentElement.style.setProperty('--fs', fScale.toFixed(2)); }
+document.getElementById('btn-aplus').addEventListener('click', ()=>{ if(fScale<F_MAX){fScale=Math.min(F_MAX,fScale+F_STEP);setF();} });
+document.getElementById('btn-aminus').addEventListener('click', ()=>{ if(fScale>F_MIN){fScale=Math.max(F_MIN,fScale-F_STEP);setF();} });
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e=>{
+  if(e.ctrlKey||e.metaKey) return;
+  switch(e.key){
+    case 'ArrowUp':   case 'PageUp':   goT(-1); e.preventDefault(); break;
+    case 'ArrowDown': case 'PageDown': goT(+1); e.preventDefault(); break;
+    case 'ArrowLeft':  goS(-1); e.preventDefault(); break;
+    case 'ArrowRight': goS(+1); e.preventDefault(); break;
+    case 'f': case 'F': btnFs.click(); break;
+    case '=': case '+': applyZoom(zoom+0.1,true); break;
+    case '-': applyZoom(zoom-0.1,true); break;
+    case '0': applyZoom(1,true); break;
+  }
+});
+
+/* ── NAV BUTTONS ── */
+document.getElementById('nav-up').addEventListener('click',    ()=>goT(-1));
+document.getElementById('nav-down').addEventListener('click',  ()=>goT(+1));
+document.getElementById('nav-left').addEventListener('click',  ()=>goS(-1));
+document.getElementById('nav-right').addEventListener('click', ()=>goS(+1));
+
+/* ── MOUSE WHEEL ── */
+/* Wheel / trackpad — accumulate delta, fire once per gesture.
+   Trackpad sends many small events; we sum them and only commit
+   after the stream pauses (idleTimer). A single mouse-wheel
+   click typically sends deltaY ~100–120 in one shot. */
+let wAccX=0, wAccY=0, wFired=false, wIdle=null;
+const W_THRESHOLD = 60;   // px to commit a nav step
+const W_IDLE_MS   = 180;  // ms of silence → reset accumulator
+
+document.addEventListener('wheel', e=>{
+  if(e.ctrlKey){
+    e.preventDefault();
+    applyZoom(zoom + (e.deltaY<0?0.08:-0.08), false);
+    return;
+  }
+  e.preventDefault();
+
+  // Normalise: some trackpads report deltaMode=1 (lines) or 2 (pages)
+  const factor = e.deltaMode===1 ? 20 : e.deltaMode===2 ? 200 : 1;
+  wAccX += e.deltaX * factor;
+  wAccY += e.deltaY * factor;
+
+  // Reset idle timer
+  clearTimeout(wIdle);
+  wIdle = setTimeout(()=>{
+    wAccX=0; wAccY=0; wFired=false;
+  }, W_IDLE_MS);
+
+  // Fire at most once per gesture
+  if(wFired) return;
+
+  const ax=Math.abs(wAccX), ay=Math.abs(wAccY);
+  if(ax < W_THRESHOLD && ay < W_THRESHOLD) return;
+
+  wFired = true;
+  if(ay >= ax){
+    wAccY>0 ? goT(+1) : goT(-1);
+  } else {
+    wAccX>0 ? goS(+1) : goS(-1);
+  }
+},{passive:false});
+
+/* ═══════════════════════════════════════════
+   TOUCH ENGINE — SWIPE PEEK
+   ─────────────────────────────────────────
+   Desain:
+   • touchstart  → catat titik awal
+   • touchmove   → lock axis setelah 8px,
+                   matikan transisi CSS,
+                   panggil dragAll() real-time
+                   dengan rubber-band di ujung
+   • touchend    → 
+       commit (> 28% layar) → goT/goS
+       batal                → setTr(true) + snapAll()
+   
+   Rubber-band: saat di ujung (tidak ada
+   tetangga), geseran dibagi 4 (25%).
+   snapAll() setelahnya akan mengembalikan
+   ke posisi kanonik dengan transisi mulus.
+═══════════════════════════════════════════ */
+const COMMIT = 0.28;  // 28% layar untuk commit
+const BAND   = 0.25;  // resistansi rubber-band
+const AXIS_T = 8;     // px sebelum axis terkunci
+
+let tk = {
+  id:null, sx:0, sy:0,
+  axis:null,
+  live:false,
+  px:0, py:0,
+  mode:null    // 'pan' | 'nav' — ditentukan saat zoom > 1 vs zoom === 1
+};
+let pk = { on:false, d0:0, z0:1, px0:0, py0:0 };  // pinch state + pan start
+
+function dist2(a,b){ return Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY); }
+
+// Titik tengah dua jari
+function mid2(a,b){ return {x:(a.clientX+b.clientX)/2, y:(a.clientY+b.clientY)/2}; }
+
+document.addEventListener('touchstart', e=>{
+  if(e.touches.length===2){
+    // Mulai pinch — batalkan swipe/pan aktif
+    if(tk.live && tk.mode==='nav'){ setTr(true); snapAll(); }
+    tk = {id:null,sx:0,sy:0,axis:null,live:false,px:0,py:0,mode:null};
+    pk = {
+      on:true,
+      d0:dist2(e.touches[0],e.touches[1]),
+      z0:zoom,
+      px0:panX, py0:panY
+    };
+    return;
+  }
+  if(e.touches.length>1) return;
+
+  const t = e.touches[0];
+  tk = {
+    id:t.identifier, sx:t.clientX, sy:t.clientY,
+    axis:null, live:false, px:0, py:0,
+    // Untuk pan mode: simpan panX/Y saat touchstart
+    panX0: panX, panY0: panY,
+    _liveX: panX, _liveY: panY,
+    // Tentukan mode langsung berdasarkan zoom
+    mode: zoom > 1.01 ? 'pan' : 'nav'
+  };
+  pk.on = false;
+},{passive:true});
+
+document.addEventListener('touchmove', e=>{
+  // ── Pinch zoom + pan simultan ──
+  if(pk.on && e.touches.length===2){
+    e.preventDefault();
+    const d   = dist2(e.touches[0],e.touches[1]);
+    const m   = mid2(e.touches[0],e.touches[1]);
+    const newZ = Math.min(Z_MAX, Math.max(Z_MIN, pk.z0*(d/pk.d0)));
+    // Pan mengikuti pergeseran titik tengah jari
+    const nx  = pk.px0 + (m.x - (W()/2));
+    const ny  = pk.py0 + (m.y - (H()/2));
+    applyZoom(newZ, false, nx, ny);
+    return;
+  }
+  if(pk.on || tk.id===null) return;
+
+  const t = Array.from(e.touches).find(tt=>tt.identifier===tk.id);
+  if(!t) return;
+
+  const dx = t.clientX - tk.sx;
+  const dy = t.clientY - tk.sy;
+
+  // ── MODE PAN (zoom > 1) ──
+  if(tk.mode==='pan'){
+    e.preventDefault();
+    tk.live=true;
+    // panX/Y bergerak berlawanan arah jari (seperti scroll natural)
+    const c = clampPan(tk.panX0 + dx, tk.panY0 + dy, zoom);
+    zWrap.style.transition='none';
+    zWrap.style.transform=`scale(${zoom}) translate(${c.x/zoom}px,${c.y/zoom}px)`;
+    // Simpan posisi live untuk dicommit di touchend
+    tk._liveX = c.x;
+    tk._liveY = c.y;
+    return;
+  }
+
+  // ── MODE NAV (zoom === 1) ──
+  if(!tk.axis){
+    if(Math.abs(dx)<AXIS_T && Math.abs(dy)<AXIS_T) return;
+    tk.axis = Math.abs(dx)>=Math.abs(dy) ? 'h' : 'v';
+    setTr(false);
+    tk.live = true;
+  }
+
+  e.preventDefault();
+
+  let px=dx, py=dy;
+  if(tk.axis==='h'){
+    const canL = curS[curT]>0;
+    const canR = curS[curT]<slides[curT].length-1;
+    if(!canL && dx>0) px=dx*BAND;
+    if(!canR && dx<0) px=dx*BAND;
+    tk.px=px;
+    dragAll('h', px);
+  } else {
+    const canU = curT>0;
+    const canD = curT<NT-1;
+    if(!canU && dy>0) py=dy*BAND;
+    if(!canD && dy<0) py=dy*BAND;
+    tk.py=py;
+    dragAll('v', py);
+  }
+},{passive:false});
+
+document.addEventListener('touchend', e=>{
+  // Pinch end
+  if(pk.on){
+    if(e.touches.length<2){
+      pk.on=false;
+      // Commit pan position setelah pinch selesai
+      const c=clampPan(panX, panY, zoom);
+      panX=c.x; panY=c.y;
+    }
+    return;
+  }
+  if(tk.id===null) return;
+  const found = Array.from(e.changedTouches).find(tt=>tt.identifier===tk.id);
+  if(!found){ tk.id=null; return; }
+
+  const wasLive=tk.live, mode=tk.mode;
+  const axis=tk.axis, px=tk.px, py=tk.py;
+  const liveX=tk._liveX, liveY=tk._liveY;
+  tk={id:null,sx:0,sy:0,axis:null,live:false,px:0,py:0,mode:null,panX0:0,panY0:0,_liveX:panX,_liveY:panY};
+
+  // ── Selesai pan ──
+  if(mode==='pan'){
+    if(wasLive){
+      panX = liveX !== undefined ? liveX : panX;
+      panY = liveY !== undefined ? liveY : panY;
+    }
+    return;
+  }
+
+  // ── Selesai nav ──
+  setTr(true);
+  if(!wasLive) return;
+
+  if(axis==='h'){
+    if     (px < -(W()*COMMIT)) goS(+1);
+    else if(px >  (W()*COMMIT)) goS(-1);
+    else { snapAll(); setActive(); }
+  } else {
+    if     (py < -(H()*COMMIT)) goT(+1);
+    else if(py >  (H()*COMMIT)) goT(-1);
+    else { snapAll(); setActive(); }
+  }
+},{passive:true});
+
+/* ═══════════════════════════════════════════
+   CONTENT OVERFLOW ANALYZER
+═══════════════════════════════════════════ */
+function analyzeOverflow(){
+  const issues=[];
+  slides.forEach((sa,t)=>{
+    sa.forEach((sl,s)=>{
+      const body=sl.querySelector('.slide-body'); if(!body) return;
+      const overflow=body.scrollHeight-body.clientHeight;
+      const ratio=(body.scrollHeight/Math.max(body.clientHeight,1));
+      if(overflow>20){
+        const title=sl.querySelector('.slide-title');
+        const label=sl.querySelector('.slide-topic-label');
+        const name=(label?label.textContent:'')+' / '+(title?title.textContent.replace(/\n/g,' '):'Slide');
+        issues.push({t,s,name,overflow:Math.round(overflow),ratio:ratio.toFixed(2)});
+      }
+    });
+  });
+  if(issues.length>0) showOverflowWarning(issues);
+}
+
+function showOverflowWarning(issues){
+  const panel=document.createElement('div');
+  panel.id='overflow-panel';
+  panel.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-weight:700;font-size:0.82rem;letter-spacing:0.05em;">⚠ Peringatan Konten</span>
+      <button id="ov-close" style="background:none;border:none;color:inherit;cursor:pointer;font-size:1.1rem;opacity:0.7;padding:0 4px;">✕</button>
+    </div>
+    <p style="font-size:0.72rem;opacity:0.75;margin-bottom:10px;line-height:1.5;">
+      Slide berikut kemungkinan memiliki konten yang melebihi area tampilan:
+    </p>
+    <div id="ov-list"></div>
+    <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);font-size:0.68rem;opacity:0.6;line-height:1.6;">
+      Gunakan <strong>A−</strong> untuk perkecil teks, atau pecah konten ke sub-slide baru.
+    </div>`;
+  const list=panel.querySelector('#ov-list');
+  issues.forEach(({t,s,name,overflow,ratio})=>{
+    const sev=ratio>1.4?'#ff6b6b':ratio>1.2?'#ffd166':'#a8dadc';
+    const sevL=ratio>1.4?'Kritis':ratio>1.2?'Sedang':'Ringan';
+    const item=document.createElement('div');
+    item.style.cssText='margin-bottom:8px;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,0.06);cursor:pointer;';
+    item.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+      <span style="font-size:0.7rem;flex:1;line-height:1.4;">${name}</span>
+      <span style="font-size:0.64rem;padding:2px 7px;border-radius:10px;background:${sev}22;color:${sev};white-space:nowrap;border:1px solid ${sev}44;">${sevL} +${overflow}px</span>
+    </div>`;
+    item.addEventListener('click',()=>{ setTr(true); curT=t; curS[t]=s; snapAll(); setActive(); });
+    list.appendChild(item);
+  });
+  Object.assign(panel.style,{
+    position:'fixed',bottom:'58px',left:'50%',
+    transform:'translateX(-50%)',
+    width:'min(340px,90vw)',
+    background:'rgba(14,20,28,0.94)',color:'#c8dce0',
+    borderRadius:'14px',padding:'14px 16px',zIndex:'200',
+    fontFamily:"'DM Sans',system-ui,sans-serif",
+    boxShadow:'0 8px 32px rgba(0,0,0,0.6)',
+    backdropFilter:'blur(16px)',
+    border:'1px solid rgba(255,255,255,0.08)'
+  });
+  document.body.appendChild(panel);
+  document.getElementById('ov-close').addEventListener('click',()=>panel.remove());
+  setTimeout(()=>{ const p=document.getElementById('overflow-panel'); if(p) p.style.opacity='0.3'; },12000);
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+function buildDots(){
+  slides.forEach(sa=>{
+    sa.forEach(sl=>{
+      const c=sl.querySelector('.progress-dots'); if(!c) return;
+      c.innerHTML=sa.map(()=>'<span></span>').join('');
+    });
+  });
+}
+
+slides.forEach(sa=>{
+  sa.forEach(sl=>{ sl.style.position='absolute'; sl.style.inset='0'; });
+});
+buildDots();
+setTr(false);   // tidak ada transisi saat init
+snapAll();
+setTr(true);    // aktifkan setelah posisi awal terpasang
+setActive();
+
+requestAnimationFrame(()=>requestAnimationFrame(analyzeOverflow));
+
+/* ═══════════════════════════════════════════
+   SPACE-AWARE FONT AUTO-FIT
+   Binary-search --fs-scale per slide so
+   slide-body content fits its container.
+   Cap: 1.12× max (avoids huge text on
+   sparse slides), 0.72× min (floor).
+═══════════════════════════════════════════ */
+function autoFitSlide(sl){
+  const body = sl.querySelector('.slide-body');
+  if(!body) return;
+  // Only auto-fit; never touch user A+/A− adjustments
+  // We use a separate CSS var --fs-auto per slide
+  // Reset first
+  sl.style.removeProperty('--fs-auto');
+
+  const FMAX = 1.12;
+  const FMIN = 0.72;
+  let lo = FMIN, hi = FMAX, best = FMIN;
+  for(let i=0; i<10; i++){
+    const mid = (lo + hi) / 2;
+    sl.style.setProperty('--fs-auto', mid.toFixed(3));
+    // Force layout
+    void body.scrollHeight;
+    if(body.scrollHeight <= body.clientHeight + 4){
+      best = mid; lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+  sl.style.setProperty('--fs-auto', best.toFixed(3));
+}
+
+// Patch all font-size rules to multiply by --fs-auto
+// We do this by overriding --fs at slide level:
+// each slide gets its own --fs = --fs-auto * global --fs
+// We achieve this by wrapping with a style override
+function patchSlideFS(){
+  // Each slide: override --fs locally to best * global fScale
+  function applyAll(){
+    slides.forEach(sa => sa.forEach(sl => {
+      const auto = parseFloat(sl.style.getPropertyValue('--fs-auto') || '1');
+      sl.style.setProperty('--fs', (auto * fScale).toFixed(3));
+    }));
+  }
+
+  // Run auto-fit on each slide after first layout
+  slides.forEach(sa => sa.forEach(sl => autoFitSlide(sl)));
+  applyAll();
+
+  // Re-apply on resize
+  window.addEventListener('resize', ()=>{
+    slides.forEach(sa => sa.forEach(sl => autoFitSlide(sl)));
+    applyAll();
+  });
+
+  // Patch A+/A- to also refresh
+  const origSetF = window.__setF || (()=>{});
+  // Intercept fScale changes
+  const aplus  = document.getElementById('btn-aplus');
+  const aminus = document.getElementById('btn-aminus');
+  aplus.addEventListener('click',  ()=>{ requestAnimationFrame(applyAll); });
+  aminus.addEventListener('click', ()=>{ requestAnimationFrame(applyAll); });
+}
+
+requestAnimationFrame(()=>requestAnimationFrame(patchSlideFS));
+
+})();
+</script>
+</body>
+</html>
